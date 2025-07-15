@@ -1,168 +1,811 @@
+
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Aaban Akhtar</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap"
-      rel="stylesheet"
-    />
-    <style>
-      body {
-        font-family: 'Inter', sans-serif;
-      }
-    </style>
-  </head>
-  <body class="bg-gray-950 text-white">
-    <!-- Navbar -->
-    <header class="flex justify-between items-center px-6 py-4">
-      <h1 class="text-xl font-semibold tracking-wide">AABAN AKHTAR</h1>
-      <nav class="space-x-6 text-sm text-gray-300">
-        <a href="#projects" class="hover:text-white">Projects</a>
-        <a href="#about" class="hover:text-white">About</a>
-        <a href="#contact" class="hover:text-white">Contact</a>
-      </nav>
-    </header>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aaban Akhtar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-    <!-- Hero Section -->
-    <section class="h-screen flex flex-col justify-center items-center text-center px-4">
-      <h2 class="text-5xl md:text-6xl font-light leading-tight tracking-tight text-white mb-4">
-        Exploring the Future with <span class="font-semibold text-indigo-500">Code</span>
-      </h2>
-      <p class="text-lg text-gray-400 max-w-xl mb-8">
-        I'm Aaban — a programmer, robotics enthusiast, and digital tinkerer.
-      </p>
-      <a
-        href="#projects"
-        class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 transition rounded-xl text-white font-medium"
-      >
-        Explore My Work
-      </a>
-    </section>
-    
-    <!-- About Me Section -->
-    <section id="about" class="bg-gray-950 text-white py-20 px-6">
-    <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center gap-12">
-        <!-- Profile Image -->
-        <div class="w-40 h-40 rounded-full bg-gray-800 overflow-hidden flex-shrink-0 shadow-md">
-        <img src="me.png" alt="Aaban Akhtar" class="w-full h-full object-cover" />
-        </div>
+  :root {
+    --black: #080808;
+    --white: #f2f2f2;
+    --gray-dark: #1a1a1a;
+    --gray-mid: #666;
+    --gray-light: #aaa;
+    --accent: #f2f2f2;
+  }
 
-        <!-- Text Content -->
-        <div>
-        <h2 class="text-4xl font-semibold mb-4">About Me</h2>
-        <p class="text-gray-400 text-lg leading-relaxed mb-6">
-            I’m Aaban Akhtar — a systems developer, roboticist, and passionate builder. Whether it’s designing an x86 kernel, crafting a 6502 emulator, or building a subsystem for an FTC robot, I love creating purposeful tech from the ground up.
-        </p>
-        <p class="text-gray-400 text-lg leading-relaxed mb-6">
-            Since the beginning, I’ve been drawn to low-level technology, exploring it through hands-on projects. My interests primarily lean toward embedded systems, operating system development, and hardware-focused programming.
-        </p>
-        <p class="text-gray-400 text-lg leading-relaxed">
-            I'm currently exploring internships, and love to explore how humans solve problems through code. Outside of tech, I love to fish and occasionally play basketball. I also run the ARC Gaming PCs storefront on Jawa.gg.
-        </p>
-        </div>
-    </div>
-    </section>
+  html { scroll-behavior: smooth; }
 
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Space Grotesk', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
 
-    <!-- Featured Projects Section -->
-    <section id="projects" class="bg-gray-900 text-white py-16 px-6">
-    <div class="max-w-6xl mx-auto text-center mb-12">
-        <h2 class="text-4xl font-semibold mb-2">Featured Projects</h2>
-        <p class="text-gray-400 text-lg">
-        I love to code. Here are some of my best projects!
-        </p>
-    </div>
+  /* ── CURSOR ── */
+  #cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--white);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: width .15s, height .15s, background .15s;
+    mix-blend-mode: difference;
+  }
+  #cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(242,242,242,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform .08s ease, width .2s, height .2s;
+    mix-blend-mode: difference;
+  }
+  body:has(a:hover) #cursor, body:has(button:hover) #cursor { width: 18px; height: 18px; }
 
-    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
-        <!-- Project 1 -->
-        <div class="bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition">
-        <div class="mb-4 h-40 bg-gray-700 rounded-lg animate-pulse"></div>
-        <h3 class="text-2xl font-medium mb-2">Twig Operating System</h3>
-        <p class="text-gray-400 mb-4">
-            An educational operating system written in C and x86, with a simple shell and ramdisk.
-        </p>
-        <div class="flex flex-wrap gap-2 mb-4">
-            <span class="bg-gray-700 text-sm px-2 py-1 rounded">C</span>
-            <span class="bg-gray-700 text-sm px-2 py-1 rounded">x86</span>
-            <span class="bg-gray-700 text-sm px-2 py-1 rounded">OSDev</span>
-        </div>
-        <a href="https://github.com/aabanakhtar-github/twig-os" class="text-indigo-400 hover:underline text-sm">View on GitHub →</a>
-        </div>
+  /* ── NOISE GRAIN ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 9000;
+  }
 
-        <!-- Project 2 -->
-        <div class="bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition">
-        <div class="mb-4 h-40 bg-gray-700 rounded-lg animate-pulse"></div>
-        <h3 class="text-2xl font-medium mb-2">6502 Emulator</h3>
-        <p class="text-gray-400 mb-4">
-            A complete emulator for the MOS 6502 processor with instruction-level accuracy.
-        </p>
-        <div class="flex flex-wrap gap-2 mb-4">
-            <span class="bg-gray-700 text-sm px-2 py-1 rounded">C++</span>
-            <span class="bg-gray-700 text-sm px-2 py-1 rounded">Emulator</span>
-            <span class="bg-gray-700 text-sm px-2 py-1 rounded">Assembly</span>
-        </div>
-        <a href="#" class="text-indigo-400 hover:underline text-sm">View on GitHub →</a>
-        </div>
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 3rem;
+    mix-blend-mode: difference;
+  }
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: .8rem;
+    letter-spacing: .15em;
+    color: var(--white);
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: .75rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    text-decoration: none;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--white); }
 
-        <!-- Project 3 -->
-        <div class="bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition">
-        <div class="mb-4 h-40 bg-gray-700 rounded-lg animate-pulse"></div>
-        <h3 class="text-2xl font-medium mb-2">Vortex Programming Language</h3>
-        <p class="text-gray-400 mb-4">A simple programming language than runs on a custom bytecode virtual machine</p>
-        <div class="flex flex-wrap gap-2 mb-4">
-            <span class="bg-gray-700 text-sm px-2 py-1 rounded">Python</span>
-            <span class="bg-gray-700 text-sm px-2 py-1 rounded">NLP</span>
-            <span class="bg-gray-700 text-sm px-2 py-1 rounded">LLMs</span>
-        </div>
-        <a href="#" class="text-indigo-400 hover:underline text-sm">View on Github -></a>
-        </div>
-    </div>
-    </section>
-<!-- Contact Section -->
-<section id="contact" class="bg-gray-900 text-white py-20 px-6">
-  <div class="max-w-3xl mx-auto text-center">
-    <h2 class="text-4xl font-semibold mb-4">Get In Touch</h2>
-    <p class="text-gray-400 text-lg mb-8">
-      I'm always open to collaborating, discussing ideas, or just talking tech. Feel free to reach out!
-    </p>
+  /* ── HERO ── */
+  #hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 3rem 4rem;
+    overflow: hidden;
+  }
 
-    <!-- Email -->
-    <div class="mb-6">
-      <a href="mailto:aabanakhtar.home@gmail.com" class="text-indigo-400 text-lg hover:underline">
-        aabanakhtar.home@gmail.com
-      </a>
-    </div>
+  .hero-photo-container {
+    position: absolute;
+    top: 50%;
+    right: 6rem;
+    transform: translateY(-50%);
+    width: 280px;
+    height: 360px;
+  }
+  .hero-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) contrast(1.1);
+    display: block;
+  }
+  .hero-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    background: var(--gray-dark);
+    border: 1px solid #2a2a2a;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: .75rem;
+    color: var(--gray-mid);
+  }
+  .hero-photo-placeholder svg { opacity: .3; }
+  .hero-photo-placeholder span {
+    font-family: 'Space Mono', monospace;
+    font-size: .65rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    opacity: .4;
+  }
+  .photo-frame {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(242,242,242,0.12);
+    pointer-events: none;
+  }
+  .photo-frame::before {
+    content: '';
+    position: absolute;
+    top: -6px; left: -6px; right: -6px; bottom: -6px;
+    border: 1px solid rgba(242,242,242,0.05);
+  }
 
-    <!-- Social Links -->
-    <div class="flex justify-center gap-6 text-gray-400 text-2xl">
-      <!-- GitHub -->
-      <a href="https://github.com/aabanakhtar-github.com" target="_blank" class="hover:text-white transition">
-        <svg fill="currentColor" viewBox="0 0 24 24" class="w-6 h-6">
-          <path
-            fill-rule="evenodd"
-            d="M12 0a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.5-4-1.5-.5-1.2-1.3-1.5-1.3-1.5-1-.7.1-.7.1-.7 1.2.1 1.9 1.3 1.9 1.3 1 .1 1.6-.8 1.6-.8.9-1.4 2.2-1 2.8-.7.1-.6.3-1.1.6-1.4-2.6-.3-5.3-1.3-5.3-5.9 0-1.3.4-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 016 0C18 5.2 19 5.5 19 5.5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.6-2.7 5.6-5.3 5.9.4.3.7 1 .7 2v3c0 .3.2.7.8.6A12 12 0 0012 0z"
-          />
-        </svg>
-      </a>
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: .7rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+    margin-bottom: 1.25rem;
+    opacity: 0;
+    animation: fadeUp .6s .2s forwards;
+  }
 
-      <!-- LinkedIn -->
-      <a href="https://www.linkedin.com/in/aaban-akhtar-240064303/" target="_blank" class="hover:text-white transition">
-        <svg fill="currentColor" viewBox="0 0 24 24" class="w-6 h-6">
-          <path
-            d="M4.98 3.5C4.98 5 3.89 6 2.5 6S0 5 0 3.5 1.09 1 2.5 1s2.48 1 2.48 2.5zM0 8.99h5V24H0V8.99zM7.5 8.99h4.7v2.1c.7-1.2 2.3-2.1 4.3-2.1 4.6 0 5.5 3 5.5 6.8V24H17v-6.9c0-1.6-.1-3.6-2.2-3.6s-2.6 1.7-2.6 3.5V24H7.5V8.99z"
-          />
-        </svg>
-      </a>
-    </div>
+  .hero-name {
+    font-size: clamp(3.5rem, 8vw, 8rem);
+    font-weight: 700;
+    line-height: .95;
+    letter-spacing: -.03em;
+    color: var(--white);
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+  .hero-name-line {
+    display: block;
+    opacity: 0;
+    transform: translateY(100%);
+    animation: slideUp .7s cubic-bezier(0.16,1,0.3,1) forwards;
+  }
+  .hero-name-line:nth-child(2) { animation-delay: .1s; }
+
+  .hero-desc {
+    max-width: 420px;
+    font-size: 1rem;
+    color: var(--gray-mid);
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeUp .6s .5s forwards;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    right: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    opacity: 0;
+    animation: fadeUp .5s 1s forwards;
+  }
+  .hero-scroll span {
+    font-family: 'Space Mono', monospace;
+    font-size: .6rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+    writing-mode: vertical-rl;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(to bottom, var(--gray-mid), transparent);
+    animation: scrollPulse 2s 1s infinite;
+  }
+
+  /* ── SECTIONS ── */
+  section { padding: 6rem 3rem; }
+
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: .65rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #222;
+    max-width: 200px;
+  }
+
+  /* ── ABOUT ── */
+  #about { background: var(--black); border-top: 1px solid #1a1a1a; }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+  .about-heading {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -.03em;
+    line-height: 1.05;
+    color: var(--white);
+  }
+  .about-text {
+    font-size: 1rem;
+    color: var(--gray-mid);
+    line-height: 1.75;
+    margin-bottom: 1.5rem;
+  }
+  .skills-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin-top: 2rem;
+  }
+  .skill-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: .65rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    border: 1px solid #2a2a2a;
+    padding: .35rem .75rem;
+    transition: border-color .2s, color .2s;
+  }
+  .skill-tag:hover { border-color: var(--gray-mid); color: var(--white); }
+
+  /* ── PROJECTS ── */
+  #projects { background: #0e0e0e; border-top: 1px solid #1a1a1a; }
+
+  .projects-heading {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -.03em;
+    margin-bottom: 3rem;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: #1a1a1a;
+    border: 1px solid #1a1a1a;
+  }
+
+  .project-card {
+    background: #0e0e0e;
+    padding: 2rem;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: .75rem;
+    transition: background .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--white);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform .3s cubic-bezier(0.16,1,0.3,1);
+    z-index: 0;
+  }
+  .project-card:hover::after { transform: scaleY(1); }
+  .project-card:hover .project-name,
+  .project-card:hover .project-desc,
+  .project-card:hover .project-lang,
+  .project-card:hover .project-arrow { color: var(--black) !important; }
+
+  .project-card > * { position: relative; z-index: 1; }
+
+  .project-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .project-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--white);
+    transition: color .3s;
+  }
+  .project-arrow {
+    font-size: 1.1rem;
+    color: var(--gray-mid);
+    transition: color .3s, transform .2s;
+  }
+  .project-card:hover .project-arrow { transform: translate(3px, -3px); }
+
+  .project-desc {
+    font-size: .85rem;
+    color: var(--gray-mid);
+    line-height: 1.5;
+    flex: 1;
+    transition: color .3s;
+  }
+  .project-lang {
+    font-family: 'Space Mono', monospace;
+    font-size: .6rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+    transition: color .3s;
+  }
+
+  /* ── EXPERIENCE ── */
+  #experience { background: var(--black); border-top: 1px solid #1a1a1a; }
+
+  .exp-heading {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -.03em;
+    margin-bottom: 3rem;
+  }
+
+  .exp-list { display: flex; flex-direction: column; gap: 0; }
+
+  .exp-item {
+    display: grid;
+    grid-template-columns: 1fr 2fr auto;
+    gap: 2rem;
+    align-items: start;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid #1a1a1a;
+    transition: background .2s;
+  }
+  .exp-item:first-child { border-top: 1px solid #1a1a1a; }
+
+  .exp-role {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: .25rem;
+  }
+  .exp-org {
+    font-family: 'Space Mono', monospace;
+    font-size: .65rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+  }
+  .exp-desc {
+    font-size: .9rem;
+    color: var(--gray-mid);
+    line-height: 1.65;
+  }
+  .exp-stat {
+    text-align: right;
+    white-space: nowrap;
+  }
+  .exp-stat .number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--white);
+    display: block;
+  }
+  .exp-stat .label {
+    font-family: 'Space Mono', monospace;
+    font-size: .6rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+  }
+
+  /* ── CONNECT ── */
+  #connect {
+    background: var(--white);
+    color: var(--black);
+    border-top: 1px solid #ddd;
+    text-align: center;
+    padding: 7rem 3rem;
+  }
+  #connect .section-label { color: #999; justify-content: center; }
+  #connect .section-label::after { display: none; }
+
+  .connect-heading {
+    font-size: clamp(2.5rem, 6vw, 6rem);
+    font-weight: 700;
+    letter-spacing: -.04em;
+    line-height: 1;
+    color: var(--black);
+    margin-bottom: 3rem;
+  }
+
+  .social-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    font-family: 'Space Mono', monospace;
+    font-size: .75rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: #333;
+    text-decoration: none;
+    padding: .85rem 1.75rem;
+    border: 1px solid #ccc;
+    transition: background .2s, color .2s, border-color .2s;
+  }
+  .social-link:hover {
+    background: var(--black);
+    color: var(--white);
+    border-color: var(--black);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--black);
+    padding: 2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #1a1a1a;
+  }
+  footer span {
+    font-family: 'Space Mono', monospace;
+    font-size: .6rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--gray-mid);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(100%); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: .4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity .7s cubic-bezier(0.16,1,0.3,1), transform .7s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── GLITCH TEXT ── */
+  .glitch {
+    position: relative;
+    display: inline-block;
+  }
+  .glitch::before, .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+  .glitch:hover::before {
+    opacity: .7;
+    color: var(--white);
+    clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
+    transform: translate(-2px, 0);
+    animation: glitch1 .3s steps(2) forwards;
+  }
+  .glitch:hover::after {
+    opacity: .7;
+    color: var(--white);
+    clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+    transform: translate(2px, 0);
+    animation: glitch2 .3s steps(2) .05s forwards;
+  }
+  @keyframes glitch1 {
+    0% { transform: translate(-2px, 0); }
+    33% { transform: translate(2px, 2px); }
+    66% { transform: translate(-1px, -1px); }
+    100% { transform: translate(0,0); opacity: 0; }
+  }
+  @keyframes glitch2 {
+    0% { transform: translate(2px, 0); }
+    33% { transform: translate(-2px, 2px); }
+    66% { transform: translate(1px, -1px); }
+    100% { transform: translate(0,0); opacity: 0; }
+  }
+
+  /* ── SCRAMBLE ── */
+  .scramble { font-variant-numeric: tabular-nums; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1.25rem 1.5rem; }
+    .nav-links { gap: 1.5rem; }
+    #hero { padding: 0 1.5rem 3rem; }
+    .hero-photo-container { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .projects-grid { grid-template-columns: 1fr 1fr; }
+    .exp-item { grid-template-columns: 1fr; gap: 1rem; }
+    .exp-stat { text-align: left; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+  }
+  @media (max-width: 600px) {
+    .projects-grid { grid-template-columns: 1fr; }
+    .hero-name { font-size: clamp(2.8rem, 12vw, 4rem); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">AA</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#connect">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-photo-container">
+    <img src="me.png" class="hero-photo" alt="Aaban Akhtar"/>
+    <div class="photo-frame"></div>
   </div>
 
+  <p class="hero-eyebrow">Student</p>
+  <h1 class="hero-name">
+    <span class="hero-name-line glitch" data-text="Aaban">Aaban</span>
+    <span class="hero-name-line glitch" data-text="Akhtar" style="animation-delay:.1s">Akhtar</span>
+  </h1>
+  <p class="hero-desc">
+    I build cool things.
+  </p>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
 </section>
-        <!-- Footer -->
-    <footer class="text-center text-sm text-gray-500 py-8 border-t border-gray-800">
-      © 2025 Aaban Akhtar. All rights reserved.
-    </footer>
-  </body>
+
+<!-- ABOUT -->
+<section id="about">
+  <p class="section-label reveal">About</p>
+  <div class="about-grid">
+    <div class="reveal">
+      <h2 class="about-heading">Just a student<br/>who builds things<br/>for fun.</h2>
+    </div>
+    <div class="reveal" style="transition-delay:.1s">
+      <p class="about-text">
+        I'm interested in how things work at a low level — how computers execute code, how filesystems store data, how languages get compiled. Most of my projects are me trying to answer those questions by building the thing myself.
+      </p>
+      <p class="about-text">
+        Outside of that, I've spent years doing competitive robotics and ran a small PC business on the side. I like figuring things out as I go.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <p class="section-label reveal">Selected Projects</p>
+  <h2 class="projects-heading reveal">Things I've built.</h2>
+  <div class="projects-grid reveal" style="transition-delay:.1s">
+
+    <a class="project-card" href="https://github.com/aabanakhtar/twig-os" target="_blank" rel="noopener">
+      <div class="project-top">
+        <span class="project-name">twig-os</span>
+        <span class="project-arrow">↗</span>
+      </div>
+      <p class="project-desc">32-bit protected mode, single-tasking OS built from scratch for educational purposes. Runs on QEMU.</p>
+      <span class="project-lang">C · ASM · QEMU</span>
+    </a>
+
+    <a class="project-card" href="https://github.com/aabanakhtar/mini-c-compiler" target="_blank" rel="noopener">
+      <div class="project-top">
+        <span class="project-name">mini-c-compiler</span>
+        <span class="project-arrow">↗</span>
+      </div>
+      <p class="project-desc">LLVM-based compiler for a subset of C — lexer, parser, IR emission, full pipeline.</p>
+      <span class="project-lang">C++ · LLVM · Compilers</span>
+    </a>
+
+    <a class="project-card" href="https://github.com/aabanakhtar/mos-6502-emulator" target="_blank" rel="noopener">
+      <div class="project-top">
+        <span class="project-name">mos-6502-emulator</span>
+        <span class="project-arrow">↗</span>
+      </div>
+      <p class="project-desc">Cycle-accurate emulator for the MOS 6502 microprocessor with Catch2 unit tests.</p>
+      <span class="project-lang">C++ · Emulation · Catch2</span>
+    </a>
+
+    <a class="project-card" href="https://github.com/aabanakhtar/vortex-lang" target="_blank" rel="noopener">
+      <div class="project-top">
+        <span class="project-name">vortex-lang</span>
+        <span class="project-arrow">↗</span>
+      </div>
+      <p class="project-desc">Bytecode-compiled language built on a custom stack-based VM in C++20.</p>
+      <span class="project-lang">C++ · Lang Design · VM</span>
+    </a>
+
+    <a class="project-card" href="https://github.com/aabanakhtar/http-threadpool-server" target="_blank" rel="noopener">
+      <div class="project-top">
+        <span class="project-name">http-threadpool-server</span>
+        <span class="project-arrow">↗</span>
+      </div>
+      <p class="project-desc">HTTP server using custom thread pools to handle concurrent client requests.</p>
+      <span class="project-lang">C++ · Networking · Unix Threads</span>
+    </a>
+
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <p class="section-label reveal">Experience</p>
+  <h2 class="exp-heading reveal">What I've done.</h2>
+  <div class="exp-list">
+
+    <div class="exp-item reveal">
+      <div>
+        <p class="exp-role">FTC Robotics Team Lead</p>
+        <p class="exp-org">FIRST Tech Challenge · Teams 20625 / 23532 / 23423</p>
+      </div>
+      <p class="exp-desc">
+        Led a 10-member team to the FTC World Championship. Designed and programmed 5 robots across multiple seasons. Competed at regional, state, and international levels. Mentored new teams, performed STEM outreach at events with 200+ attendees, managed logistics, sponsorships, and a detailed engineering portfolio.
+      </p>
+      <div class="exp-stat">
+        <span class="number">Qualified for Worlds</span>
+        <span class="label">North Carolina State Finalist Captain</span>
+      </div>
+    </div>
+
+    <div class="exp-item reveal" style="transition-delay:.1s">
+      <div>
+        <p class="exp-role">Founder · PC Business</p>
+        <p class="exp-org">Sole Proprietorship · Jawa Platform</p>
+      </div>
+      <p class="exp-desc">
+        Built, configured, and sold 40+ custom gaming PCs. Managed pricing, shipping, client support, and risk end-to-end. Maintained a 5-star rating and reached top 5% seller status on Jawa in 2025. Handled customer negotiation, remote technical support, and OS configuration for maximum value.
+      </p>
+      <div class="exp-stat">
+        <span class="number">$18K</span>
+        <span class="label">Revenue · Top 5% Seller</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONNECT -->
+<section id="connect">
+  <p class="section-label">Wanna see more?</p>
+  <h2 class="connect-heading reveal">Explore what I'm up to</h2>
+  <div class="social-links reveal" style="transition-delay:.1s">
+    <a class="social-link" href="https://github.com/aabanakhtar" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </a>
+    <a class="social-link" href="https://www.instagram.com/aabanakhtar19" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+      Instagram
+    </a>
+    <a class="social-link" href="https://www.youtube.com/@aabum1" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+      YouTube
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2026 Aaban Akhtar</span>
+</footer>
+
+<script>
+  // ── CURSOR ──
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursor-ring');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animCursor() {
+    cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+    rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+
+  // ── SCROLL REVEAL ──
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => io.observe(el));
+
+  // ── NAME SCRAMBLE ON LOAD ──
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$#@!';
+  function scramble(el, finalText, duration = 800) {
+    let start = null;
+    const steps = 12;
+    function step(ts) {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      const revealed = Math.floor(progress * finalText.length);
+      let out = '';
+      for (let i = 0; i < finalText.length; i++) {
+        if (i < revealed) out += finalText[i];
+        else out += chars[Math.floor(Math.random() * chars.length)];
+      }
+      el.textContent = out;
+      if (progress < 1) requestAnimationFrame(step);
+      else el.textContent = finalText;
+    }
+    requestAnimationFrame(step);
+  }
+
+  document.querySelectorAll('.hero-name-line').forEach(el => {
+    const text = el.dataset.text;
+    setTimeout(() => scramble(el, text, 900), 600);
+  });
+
+  // ── NAV ACTIVE ──
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 200) current = s.id; });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === '#' + current ? '#f2f2f2' : '';
+    });
+  });
+</script>
+</body>
 </html>
