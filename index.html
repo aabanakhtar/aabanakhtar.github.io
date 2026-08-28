@@ -1,896 +1,2626 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>aaban_akhtar.js — Sublime Text</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet" />
-<style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1e1f1a" />
 
-  :root {
-    --bg:        #272822;
-    --bg-deep:   #1e1f1a;
-    --bg-panel:  #2d2e27;
-    --bg-tab:    #1e1f1a;
-    --line:      #3e3d32;
-    --fg:        #f8f8f2;
-    --comment:   #8c8b7f;
-    --comment-dim: #5f5e52;
-    --pink:      #f92672;
-    --green:     #a6e22e;
-    --yellow:    #e6db74;
-    --purple:    #ae81ff;
-    --cyan:      #66d9ef;
-    --orange:    #fd971f;
+  <title>aaban_akhtar.js — Sublime Text</title>
 
-    --mono: 'JetBrains Mono', 'Fira Code', ui-monospace, Menlo, Consolas, monospace;
-  }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+    rel="stylesheet"
+  />
 
-  html { scroll-behavior: smooth; }
+  <style>
+    /* =========================================================
+       RESET
+       ========================================================= */
 
-  body {
-    background: var(--bg);
-    color: var(--fg);
-    font-family: var(--mono);
-    font-size: 15px;
-    overflow-x: hidden;
-    cursor: none;
-  }
-
-  ::selection { background: var(--pink); color: var(--bg-deep); }
-
-  /* ── CURSOR (desktop only) ── */
-  #cursor, #cursor-ring { display: none; }
-  @media (pointer: fine) {
-    #cursor {
-      display: block;
-      position: fixed;
-      width: 7px; height: 7px;
-      background: var(--green);
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-      transition: width .12s, height .12s, background .12s;
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
+
+    :root {
+      --bg: #272822;
+      --bg-deep: #1e1f1a;
+      --bg-panel: #2d2e27;
+      --bg-tab: #1e1f1a;
+      --line: #3e3d32;
+
+      --fg: #f8f8f2;
+      --comment: #8c8b7f;
+      --comment-dim: #5f5e52;
+
+      --pink: #f92672;
+      --green: #a6e22e;
+      --yellow: #e6db74;
+      --purple: #ae81ff;
+      --cyan: #66d9ef;
+      --orange: #fd971f;
+
+      --mono:
+        "JetBrains Mono",
+        "Fira Code",
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        monospace;
+
+      --titlebar-height: 36px;
+      --tabbar-height: 43px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: calc(
+        var(--titlebar-height) + var(--tabbar-height) + 12px
+      );
+    }
+
+    body {
+      width: 100%;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--mono);
+      font-size: 15px;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    a {
+      color: inherit;
+    }
+
+    ::selection {
+      background: var(--pink);
+      color: var(--bg-deep);
+    }
+
+    /* =========================================================
+       CUSTOM CURSOR
+       ========================================================= */
+
+    #cursor,
     #cursor-ring {
-      display: block;
-      position: fixed;
-      width: 22px; height: 20px;
-      border: 1px solid rgba(166,226,46,0.35);
-      pointer-events: none;
-      z-index: 9998;
-      transform: translate(-50%, -50%);
+      display: none;
     }
-    body { cursor: none; }
-    body:has(a:hover) #cursor, body:has(button:hover) #cursor { background: var(--pink); width: 9px; height: 9px; }
-    body:has(a:hover) #cursor-ring, body:has(button:hover) #cursor-ring { border-color: rgba(249,38,114,0.4); }
-  }
 
-  /* ── NOISE / SCANLINE ── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-    opacity: 0.025;
-    pointer-events: none;
-    z-index: 9000;
-  }
+    @media (pointer: fine) {
+      #cursor {
+        display: block;
+        position: fixed;
+        width: 7px;
+        height: 7px;
+        background: var(--green);
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition:
+          width 0.12s,
+          height 0.12s,
+          background 0.12s;
+      }
 
-  a { color: inherit; }
+      #cursor-ring {
+        display: block;
+        position: fixed;
+        width: 22px;
+        height: 20px;
+        border: 1px solid rgba(166, 226, 46, 0.35);
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+      }
 
-  /* ── TITLE BAR ── */
-  .titlebar {
-    display: flex;
-    align-items: center;
-    gap: .6rem;
-    padding: .55rem 1rem;
-    background: var(--bg-deep);
-    border-bottom: 1px solid var(--line);
-    position: sticky;
-    top: 0;
-    z-index: 220;
-  }
-  .traffic { display: flex; gap: .4rem; }
-  .traffic span { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
-  .traffic span:nth-child(1) { background: #ff5f56; }
-  .traffic span:nth-child(2) { background: #ffbd2e; }
-  .traffic span:nth-child(3) { background: #27c93f; }
-  .titlebar-name {
-    flex: 1;
-    text-align: center;
-    font-size: .72rem;
-    color: var(--comment);
-    letter-spacing: .02em;
-  }
-  .titlebar-spacer { width: 51px; }
-  @media (max-width: 700px) { .titlebar-name { font-size: .62rem; } }
+      body:has(a:hover) #cursor,
+      body:has(button:hover) #cursor {
+        background: var(--pink);
+        width: 9px;
+        height: 9px;
+      }
 
-  /* ── TAB BAR / NAV ── */
-  .tabbar {
-    display: flex;
-    align-items: stretch;
-    background: var(--bg-tab);
-    border-bottom: 1px solid var(--line);
-    position: sticky;
-    top: 34px;
-    z-index: 210;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .tabbar::-webkit-scrollbar { display: none; }
-  .tab {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    padding: .7rem 1.1rem;
-    font-size: .74rem;
-    letter-spacing: .01em;
-    color: var(--comment);
-    text-decoration: none;
-    background: var(--bg-tab);
-    border-right: 1px solid var(--line);
-    white-space: nowrap;
-    transition: color .18s, background .18s;
-    position: relative;
-  }
-  .tab .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--comment-dim); transition: background .18s; }
-  .tab:hover { color: var(--fg); background: var(--bg-panel); }
-  .tab.active { color: var(--fg); background: var(--bg); }
-  .tab.active .dot { background: var(--green); }
-  .tab.active::after {
-    content: '';
-    position: absolute;
-    bottom: -1px; left: 0; right: 0;
-    height: 2px;
-    background: var(--pink);
-  }
-  .tab-logo {
-    padding: .7rem 1.1rem;
-    font-size: .74rem;
-    color: var(--green);
-    font-weight: 700;
-    border-right: 1px solid var(--line);
-    background: var(--bg-deep);
-    text-decoration: none;
-    flex-shrink: 0;
-  }
+      body:has(a:hover) #cursor-ring,
+      body:has(button:hover) #cursor-ring {
+        border-color: rgba(249, 38, 114, 0.4);
+      }
+    }
 
-  .nav-burger {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 0 1rem;
-    background: var(--bg-tab);
-    border: none;
-    border-left: 1px solid var(--line);
-    color: var(--comment);
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-  @media (max-width: 640px) {
-    .tab-label { display: inline; }
-    .tabbar { flex-wrap: nowrap; }
-    .tab:not(.tab-logo) { display: none; }
-    .nav-burger { display: flex; }
-  }
+    /* =========================================================
+       NOISE
+       ========================================================= */
 
-  .nav-drawer {
-    display: none;
-    position: fixed;
-    inset: 0;
-    top: 71px;
-    background: var(--bg-deep);
-    z-index: 200;
-    flex-direction: column;
-    padding: 1rem 0;
-    border-top: 1px solid var(--line);
-  }
-  .nav-drawer.open { display: flex; }
-  .nav-drawer a {
-    padding: 1rem 1.5rem;
-    font-size: .85rem;
-    color: var(--comment);
-    text-decoration: none;
-    border-bottom: 1px solid var(--line);
-    display: flex;
-    align-items: center;
-    gap: .6rem;
-  }
-  .nav-drawer a .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--comment-dim); }
-  .nav-drawer a:hover { color: var(--fg); }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 9000;
+    }
 
-  /* ── GUTTER + LINE LAYOUT ── */
-  .code-block {
-    display: grid;
-    grid-template-columns: 3rem 1fr;
-  }
-  .gutter {
-    border-right: 1px solid var(--line);
-    padding: inherit 0;
-    text-align: right;
-    color: var(--comment-dim);
-    font-size: .78rem;
-    user-select: none;
-    padding-top: inherit;
-  }
-  .gutter span { display: block; padding-right: .9rem; line-height: 1.9; }
-  @media (max-width: 700px) { .code-block { grid-template-columns: 0; } .gutter { display: none; } }
+    /* =========================================================
+       TITLE BAR
+       ========================================================= */
 
-  section { padding: 5rem 0; border-bottom: 1px solid var(--line); }
-  .section-inner { padding: 0 1.4rem; }
-  @media (max-width: 700px) { section { padding: 3.5rem 0; } .section-inner { padding: 0 1.25rem; } }
+    .titlebar {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      width: 100%;
+      height: var(--titlebar-height);
+      padding: 0 1rem;
+      background: var(--bg-deep);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 220;
+    }
 
-  .comment-label {
-    font-size: .72rem;
-    color: var(--comment);
-    letter-spacing: .01em;
-    margin-bottom: 1.5rem;
-    display: block;
-  }
-  .kw { color: var(--pink); }
-  .str { color: var(--yellow); }
-  .fn { color: var(--green); }
-  .num { color: var(--purple); }
-  .type { color: var(--cyan); }
-  .const { color: var(--orange); }
+    .traffic {
+      display: flex;
+      gap: 0.4rem;
+      flex-shrink: 0;
+    }
 
-  /* ── HERO ── */
-  #hero { padding-top: 4rem; padding-bottom: 4rem; border-bottom: 1px solid var(--line); }
-  .hero-code { font-size: clamp(.85rem, 1.6vw, 1.05rem); line-height: 1.9; }
-  .hero-code .indent { padding-left: 1.6rem; }
-  .hero-code .indent2 { padding-left: 3.2rem; }
+    .traffic span {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      display: inline-block;
+    }
 
-  .hero-name-line {
-    font-size: clamp(2.2rem, 6.5vw, 4.2rem);
-    font-weight: 700;
-    line-height: 1.15;
-    display: block;
-    margin: .4rem 0 .8rem;
-  }
-  .type-cursor {
-    display: inline-block;
-    width: .5em;
-    background: var(--green);
-    animation: blink 1s step-end infinite;
-    margin-left: 2px;
-    vertical-align: baseline;
-  }
-  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    .traffic span:nth-child(1) {
+      background: #ff5f56;
+    }
 
-  .hero-tags { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .3rem; }
-  .hero-tag {
-    font-size: .72rem;
-    padding: .3rem .65rem;
-    border: 1px solid var(--line);
-    background: var(--bg-panel);
-    color: var(--cyan);
-  }
+    .traffic span:nth-child(2) {
+      background: #ffbd2e;
+    }
 
-  .hero-scroll {
-    margin-top: 3rem;
-    display: flex;
-    align-items: center;
-    gap: .6rem;
-    color: var(--comment-dim);
-    font-size: .68rem;
-    letter-spacing: .08em;
-  }
-  .hero-scroll .arrow { animation: bob 1.6s ease-in-out infinite; color: var(--pink); }
-  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+    .traffic span:nth-child(3) {
+      background: #27c93f;
+    }
 
-  /* ── ABOUT ── */
-  .about-comment {
-    color: var(--comment);
-    line-height: 2;
-    font-size: .92rem;
-  }
-  .about-comment .comment-open,
-  .about-comment .comment-close { color: var(--comment-dim); }
-  .about-heading-inline {
-    color: var(--fg);
-    font-weight: 600;
-    font-size: 1.05rem;
-  }
-  .about-obj { margin-top: 2rem; font-size: .88rem; line-height: 1.95; }
-  .about-obj .key { color: var(--cyan); }
-  .about-obj .brace { color: var(--comment); }
+    .titlebar-name {
+      flex: 1;
+      min-width: 0;
+      text-align: center;
+      font-size: 0.72rem;
+      color: var(--comment);
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-  /* ── PROJECTS ── */
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: var(--line);
-    border: 1px solid var(--line);
-    margin-top: 1.5rem;
-  }
-  @media (max-width: 800px) { .projects-grid { grid-template-columns: 1fr; } }
+    .titlebar-spacer {
+      width: 51px;
+      flex-shrink: 0;
+    }
 
-  .project-card {
-    background: var(--bg);
-    padding: 1.5rem 1.6rem;
-    text-decoration: none;
-    display: block;
-    transition: background .2s;
-    position: relative;
-  }
-  .project-card:hover { background: var(--bg-panel); }
-  .project-sig {
-    font-size: .86rem;
-    margin-bottom: .5rem;
-    white-space: nowrap;
-    overflow-x: auto;
-  }
-  .project-sig .fn-name { color: var(--green); font-weight: 600; }
-  .project-arrow {
-    position: absolute;
-    top: 1.4rem; right: 1.5rem;
-    color: var(--comment-dim);
-    font-size: .9rem;
-    transition: transform .2s, color .2s;
-  }
-  .project-card:hover .project-arrow { color: var(--pink); transform: translate(3px,-3px); }
-  .project-desc {
-    color: var(--comment);
-    font-size: .82rem;
-    line-height: 1.7;
-    margin: .6rem 0 .8rem;
-    padding-left: .2rem;
-  }
-  .project-tags { display: flex; flex-wrap: wrap; gap: .4rem; }
-  .project-tags span {
-    font-size: .64rem;
-    color: var(--comment-dim);
-    background: var(--bg-deep);
-    padding: .2rem .5rem;
-    border: 1px solid var(--line);
-  }
+    /* =========================================================
+       TAB BAR
+       ========================================================= */
 
-  /* ── VIDEOS (file explorer style) ── */
-  .explorer {
-    margin-top: 1.5rem;
-    border: 1px solid var(--line);
-    background: var(--bg-deep);
-  }
-  .explorer-head {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    padding: .6rem 1rem;
-    font-size: .68rem;
-    color: var(--comment-dim);
-    letter-spacing: .06em;
-    border-bottom: 1px solid var(--line);
-    background: var(--bg-tab);
-  }
-  .video-list { display: grid; grid-template-columns: repeat(2, 1fr); }
-  @media (max-width: 800px) { .video-list { grid-template-columns: 1fr; } }
+    .tabbar {
+      display: flex;
+      align-items: stretch;
+      width: 100%;
+      height: var(--tabbar-height);
+      background: var(--bg-tab);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: var(--titlebar-height);
+      z-index: 210;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
 
-  .video-row {
-    display: flex;
-    gap: .9rem;
-    padding: .9rem 1rem;
-    text-decoration: none;
-    border-bottom: 1px solid var(--line);
-    border-right: 1px solid var(--line);
-    transition: background .18s;
-  }
-  .video-list a.video-row:nth-child(2n) { border-right: none; }
-  .video-row:hover { background: var(--bg-panel); }
-  .video-thumb-wrap {
-    position: relative;
-    width: 108px;
-    aspect-ratio: 16/9;
-    flex-shrink: 0;
-    background: var(--bg-panel);
-    overflow: hidden;
-  }
-  .video-thumb-wrap img { width: 100%; height: 100%; object-fit: cover; filter: saturate(.75) brightness(.85); transition: filter .2s; }
-  .video-row:hover .video-thumb-wrap img { filter: saturate(1) brightness(1); }
-  .video-dur {
-    position: absolute;
-    bottom: 3px; right: 3px;
-    background: rgba(30,31,26,0.9);
-    color: var(--orange);
-    font-size: .6rem;
-    padding: .05rem .3rem;
-    border: 1px solid var(--line);
-  }
-  .video-meta { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
-  .video-title {
-    font-size: .8rem;
-    color: var(--fg);
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    margin-bottom: .35rem;
-  }
-  .video-row:hover .video-title { color: var(--cyan); }
-  .video-stats { font-size: .66rem; color: var(--comment-dim); }
-  .video-stats .num { color: var(--purple); }
+    .tabbar::-webkit-scrollbar {
+      display: none;
+    }
 
-  .channel-line {
-    margin-top: 1.2rem;
-    font-size: .74rem;
-    color: var(--comment);
-  }
-  .channel-line a { color: var(--cyan); text-decoration: none; border-bottom: 1px dashed var(--comment-dim); }
-  .channel-line a:hover { color: var(--green); }
+    .tab {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0 1.1rem;
+      font-size: 0.74rem;
+      letter-spacing: 0.01em;
+      color: var(--comment);
+      text-decoration: none;
+      background: var(--bg-tab);
+      border-right: 1px solid var(--line);
+      white-space: nowrap;
+      transition:
+        color 0.18s,
+        background 0.18s;
+      position: relative;
+      flex-shrink: 0;
+    }
 
-  /* ── EXPERIENCE (git log style) ── */
-  .gitlog-head {
-    font-size: .7rem;
-    color: var(--comment-dim);
-    margin-bottom: 1.5rem;
-    padding-bottom: .8rem;
-    border-bottom: 1px solid var(--line);
-  }
-  .commit {
-    padding: 1.6rem 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .commit:first-of-type { padding-top: 0; }
-  .commit-hash { color: var(--orange); font-size: .78rem; }
-  .commit-hash::before { content: 'commit '; color: var(--comment-dim); }
-  .commit-meta { font-size: .74rem; color: var(--comment); margin: .35rem 0 .9rem; line-height: 1.8; }
-  .commit-meta .field { color: var(--comment-dim); }
-  .commit-meta .val { color: var(--cyan); }
-  .commit-title { font-size: 1rem; font-weight: 600; color: var(--fg); margin-bottom: .6rem; }
-  .commit-body { color: var(--comment); font-size: .86rem; line-height: 1.8; margin-bottom: .9rem; }
-  .commit-stat {
-    display: inline-flex;
-    gap: .9rem;
-    font-size: .78rem;
-    background: var(--bg-deep);
-    border: 1px solid var(--line);
-    padding: .5rem .9rem;
-  }
-  .commit-stat .plus { color: var(--green); }
-  .commit-stat .label { color: var(--comment-dim); }
+    .tab .dot,
+    .nav-drawer .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--comment-dim);
+      flex-shrink: 0;
+      transition: background 0.18s;
+    }
 
-  /* ── CONNECT (terminal) ── */
-  #connect { border-bottom: none; }
-  .terminal {
-    background: var(--bg-deep);
-    border: 1px solid var(--line);
-    max-width: 640px;
-  }
-  .terminal-head {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    padding: .55rem 1rem;
-    background: var(--bg-tab);
-    border-bottom: 1px solid var(--line);
-    font-size: .68rem;
-    color: var(--comment-dim);
-  }
-  .terminal-body { padding: 1.4rem 1.2rem; font-size: .85rem; line-height: 2; }
-  .prompt-line .prompt { color: var(--green); }
-  .prompt-line .path { color: var(--cyan); }
-  .prompt-line .cmd { color: var(--fg); }
-  .terminal-out { color: var(--comment); margin: .5rem 0 1.1rem; }
+    .tab:hover {
+      color: var(--fg);
+      background: var(--bg-panel);
+    }
 
-  .social-list { display: flex; flex-direction: column; gap: .5rem; }
-  .social-row {
-    display: flex;
-    align-items: center;
-    gap: .8rem;
-    text-decoration: none;
-    padding: .5rem .6rem;
-    border: 1px solid transparent;
-    transition: border-color .18s, background .18s;
-  }
-  .social-row:hover { border-color: var(--line); background: var(--bg-panel); }
-  .social-row .const { flex-shrink: 0; }
-  .social-row .str { flex: 1; }
-  .social-row .arrow { color: var(--comment-dim); }
-  .social-row:hover .arrow { color: var(--pink); }
+    .tab.active {
+      color: var(--fg);
+      background: var(--bg);
+    }
 
-  /* ── STATUS BAR / FOOTER ── */
-  .statusbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: .5rem 1.2rem;
-    background: var(--bg-deep);
-    border-top: 1px solid var(--line);
-    font-size: .66rem;
-    color: var(--comment-dim);
-    flex-wrap: wrap;
-    gap: .5rem;
-  }
-  .statusbar-left, .statusbar-right { display: flex; gap: 1.1rem; flex-wrap: wrap; }
-  .statusbar .branch { color: var(--green); }
-  .statusbar .branch::before { content: '⎇ '; }
+    .tab.active .dot {
+      background: var(--green);
+    }
 
-  h2.title {
-    font-size: clamp(1.5rem, 3vw, 2.1rem);
-    font-weight: 700;
-    color: var(--fg);
-    margin-bottom: .3rem;
-  }
-  .title .kw { color: var(--pink); }
-  .title .fn { color: var(--green); }
-  .title .paren { color: var(--comment); }
+    .tab.active::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--pink);
+    }
 
-  .reveal {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity .6s cubic-bezier(0.16,1,0.3,1), transform .6s cubic-bezier(0.16,1,0.3,1);
-  }
-  .reveal.visible { opacity: 1; transform: none; }
+    .tab-logo {
+      display: flex;
+      align-items: center;
+      padding: 0 1.1rem;
+      font-size: 0.74rem;
+      color: var(--green);
+      font-weight: 700;
+      border-right: 1px solid var(--line);
+      background: var(--bg-deep);
+      text-decoration: none;
+      flex-shrink: 0;
+    }
 
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { animation: none !important; transition: none !important; }
-  }
-</style>
+    .nav-burger {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      margin-left: auto;
+      padding: 0;
+      background: var(--bg-tab);
+      border: none;
+      border-left: 1px solid var(--line);
+      color: var(--comment);
+      font-family: var(--mono);
+      font-size: 1rem;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .nav-burger:hover {
+      color: var(--fg);
+      background: var(--bg-panel);
+    }
+
+    /* =========================================================
+       MOBILE DRAWER
+       ========================================================= */
+
+    .nav-drawer {
+      display: none;
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: calc(var(--titlebar-height) + var(--tabbar-height));
+      bottom: 0;
+      width: 100%;
+      background: var(--bg-deep);
+      z-index: 200;
+      flex-direction: column;
+      padding: 0.5rem 0;
+      border-top: 1px solid var(--line);
+      overflow-y: auto;
+    }
+
+    .nav-drawer.open {
+      display: flex;
+    }
+
+    .nav-drawer a {
+      padding: 1rem 1.25rem;
+      font-size: 0.82rem;
+      color: var(--comment);
+      text-decoration: none;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .nav-drawer a:hover {
+      color: var(--fg);
+      background: var(--bg-panel);
+    }
+
+    /* =========================================================
+       CODE LAYOUT
+       ========================================================= */
+
+    .code-block {
+      display: grid;
+      grid-template-columns: 3rem minmax(0, 1fr);
+      width: 100%;
+    }
+
+    .gutter {
+      border-right: 1px solid var(--line);
+      text-align: right;
+      color: var(--comment-dim);
+      font-size: 0.78rem;
+      user-select: none;
+      padding-top: 0;
+    }
+
+    .gutter span {
+      display: block;
+      padding-right: 0.9rem;
+      line-height: 1.9;
+    }
+
+    section {
+      width: 100%;
+      padding: 5rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-inner {
+      width: 100%;
+      min-width: 0;
+      padding: 0 1.4rem;
+    }
+
+    .comment-label {
+      display: block;
+      margin-bottom: 1.5rem;
+      color: var(--comment);
+      font-size: 0.72rem;
+      letter-spacing: 0.01em;
+    }
+
+    .kw {
+      color: var(--pink);
+    }
+
+    .str {
+      color: var(--yellow);
+    }
+
+    .fn {
+      color: var(--green);
+    }
+
+    .num {
+      color: var(--purple);
+    }
+
+    .type {
+      color: var(--cyan);
+    }
+
+    .const {
+      color: var(--orange);
+    }
+
+    /* =========================================================
+       HERO
+       ========================================================= */
+
+    #hero {
+      padding-top: 4rem;
+      padding-bottom: 4rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-code {
+      min-width: 0;
+      font-size: clamp(0.85rem, 1.6vw, 1.05rem);
+      line-height: 1.9;
+    }
+
+    .hero-code .indent {
+      padding-left: 1.6rem;
+    }
+
+    .hero-code .indent2 {
+      padding-left: 3.2rem;
+    }
+
+    .hero-name-line {
+      display: block;
+      margin: 0.4rem 0 0.8rem;
+      font-size: clamp(2.2rem, 6.5vw, 4.2rem);
+      font-weight: 700;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
+    }
+
+    .type-cursor {
+      display: inline-block;
+      width: 0.5em;
+      height: 0.9em;
+      background: var(--green);
+      animation: blink 1s step-end infinite;
+      margin-left: 2px;
+      vertical-align: baseline;
+    }
+
+    @keyframes blink {
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.3rem;
+    }
+
+    .hero-tag {
+      font-size: 0.72rem;
+      padding: 0.3rem 0.65rem;
+      border: 1px solid var(--line);
+      background: var(--bg-panel);
+      color: var(--cyan);
+    }
+
+    .hero-scroll {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 3rem;
+      color: var(--comment-dim);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+    }
+
+    .hero-scroll .arrow {
+      color: var(--pink);
+      animation: bob 1.6s ease-in-out infinite;
+    }
+
+    @keyframes bob {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(4px);
+      }
+    }
+
+    /* =========================================================
+       TITLES
+       ========================================================= */
+
+    h2.title {
+      margin-bottom: 0.3rem;
+      color: var(--fg);
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .title .kw {
+      color: var(--pink);
+    }
+
+    .title .fn {
+      color: var(--green);
+    }
+
+    .title .paren {
+      color: var(--comment);
+    }
+
+    /* =========================================================
+       ABOUT
+       ========================================================= */
+
+    .about-comment {
+      color: var(--comment);
+      font-size: 0.92rem;
+      line-height: 2;
+      overflow-wrap: break-word;
+    }
+
+    .about-comment .comment-open,
+    .about-comment .comment-close {
+      color: var(--comment-dim);
+    }
+
+    .about-heading-inline {
+      color: var(--fg);
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    .about-obj {
+      margin-top: 2rem;
+      font-size: 0.88rem;
+      line-height: 1.95;
+      overflow-wrap: anywhere;
+    }
+
+    .about-obj .key {
+      color: var(--cyan);
+    }
+
+    .about-obj .brace {
+      color: var(--comment);
+    }
+
+    /* =========================================================
+       PROJECTS
+       ========================================================= */
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1px;
+      width: 100%;
+      margin-top: 1.5rem;
+      background: var(--line);
+      border: 1px solid var(--line);
+    }
+
+    .project-card {
+      position: relative;
+      display: block;
+      min-width: 0;
+      padding: 1.5rem 1.6rem;
+      background: var(--bg);
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .project-card:hover {
+      background: var(--bg-panel);
+    }
+
+    .project-sig {
+      min-width: 0;
+      margin-bottom: 0.5rem;
+      padding-right: 1.5rem;
+      font-size: 0.86rem;
+      line-height: 1.55;
+      overflow-wrap: anywhere;
+    }
+
+    .project-sig .fn-name {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    .project-arrow {
+      position: absolute;
+      top: 1.4rem;
+      right: 1.5rem;
+      color: var(--comment-dim);
+      font-size: 0.9rem;
+      transition:
+        transform 0.2s,
+        color 0.2s;
+    }
+
+    .project-card:hover .project-arrow {
+      color: var(--pink);
+      transform: translate(3px, -3px);
+    }
+
+    .project-desc {
+      margin: 0.6rem 0 0.8rem;
+      padding-left: 0.2rem;
+      color: var(--comment);
+      font-size: 0.82rem;
+      line-height: 1.7;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .project-tags span {
+      padding: 0.2rem 0.5rem;
+      border: 1px solid var(--line);
+      background: var(--bg-deep);
+      color: var(--comment-dim);
+      font-size: 0.64rem;
+    }
+
+    /* =========================================================
+       VIDEOS
+       ========================================================= */
+
+    .explorer {
+      width: 100%;
+      margin-top: 1.5rem;
+      border: 1px solid var(--line);
+      background: var(--bg-deep);
+    }
+
+    .explorer-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1rem;
+      border-bottom: 1px solid var(--line);
+      background: var(--bg-tab);
+      color: var(--comment-dim);
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .video-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      width: 100%;
+    }
+
+    .video-row {
+      display: flex;
+      min-width: 0;
+      gap: 0.9rem;
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      text-decoration: none;
+      transition: background 0.18s;
+    }
+
+    .video-list .video-row:nth-child(2n) {
+      border-right: none;
+    }
+
+    .video-row:hover {
+      background: var(--bg-panel);
+    }
+
+    .video-thumb-wrap {
+      position: relative;
+      width: 108px;
+      aspect-ratio: 16 / 9;
+      flex-shrink: 0;
+      overflow: hidden;
+      background: var(--bg-panel);
+    }
+
+    .video-thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.75) brightness(0.85);
+      transition: filter 0.2s;
+    }
+
+    .video-row:hover .video-thumb-wrap img {
+      filter: saturate(1) brightness(1);
+    }
+
+    .video-dur {
+      position: absolute;
+      right: 3px;
+      bottom: 3px;
+      padding: 0.05rem 0.3rem;
+      border: 1px solid var(--line);
+      background: rgba(30, 31, 26, 0.9);
+      color: var(--orange);
+      font-size: 0.6rem;
+    }
+
+    .video-meta {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .video-title {
+      display: -webkit-box;
+      margin-bottom: 0.35rem;
+      overflow: hidden;
+      color: var(--fg);
+      font-size: 0.8rem;
+      line-height: 1.4;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
+    .video-row:hover .video-title {
+      color: var(--cyan);
+    }
+
+    .video-stats {
+      color: var(--comment-dim);
+      font-size: 0.66rem;
+    }
+
+    .video-stats .num {
+      color: var(--purple);
+    }
+
+    .channel-line {
+      margin-top: 1.2rem;
+      color: var(--comment);
+      font-size: 0.74rem;
+      line-height: 1.7;
+    }
+
+    .channel-line a {
+      color: var(--cyan);
+      text-decoration: none;
+      border-bottom: 1px dashed var(--comment-dim);
+    }
+
+    .channel-line a:hover {
+      color: var(--green);
+    }
+
+    /* =========================================================
+       EXPERIENCE
+       ========================================================= */
+
+    .gitlog-head {
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.8rem;
+      border-bottom: 1px solid var(--line);
+      color: var(--comment-dim);
+      font-size: 0.7rem;
+    }
+
+    .commit {
+      padding: 1.6rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .commit:first-of-type {
+      padding-top: 0;
+    }
+
+    .commit-hash {
+      color: var(--orange);
+      font-size: 0.78rem;
+    }
+
+    .commit-hash::before {
+      content: "commit ";
+      color: var(--comment-dim);
+    }
+
+    .commit-meta {
+      margin: 0.35rem 0 0.9rem;
+      color: var(--comment);
+      font-size: 0.74rem;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    .commit-meta .field {
+      color: var(--comment-dim);
+    }
+
+    .commit-meta .val {
+      color: var(--cyan);
+    }
+
+    .commit-title {
+      margin-bottom: 0.6rem;
+      color: var(--fg);
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .commit-body {
+      margin-bottom: 0.9rem;
+      color: var(--comment);
+      font-size: 0.86rem;
+      line-height: 1.8;
+    }
+
+    .commit-stat {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      max-width: 100%;
+      padding: 0.5rem 0.9rem;
+      border: 1px solid var(--line);
+      background: var(--bg-deep);
+      font-size: 0.78rem;
+      line-height: 1.6;
+    }
+
+    .commit-stat .plus {
+      color: var(--green);
+    }
+
+    .commit-stat .label {
+      color: var(--comment-dim);
+    }
+
+    /* =========================================================
+       CONNECT / TERMINAL
+       ========================================================= */
+
+    #connect {
+      border-bottom: none;
+    }
+
+    .terminal {
+      width: 100%;
+      max-width: 640px;
+      margin-top: 2rem;
+      border: 1px solid var(--line);
+      background: var(--bg-deep);
+    }
+
+    .terminal-head {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1rem;
+      border-bottom: 1px solid var(--line);
+      background: var(--bg-tab);
+      color: var(--comment-dim);
+      font-size: 0.68rem;
+    }
+
+    .terminal-body {
+      padding: 1.4rem 1.2rem;
+      font-size: 0.85rem;
+      line-height: 2;
+    }
+
+    .prompt-line {
+      overflow-wrap: anywhere;
+    }
+
+    .prompt-line .prompt {
+      color: var(--green);
+    }
+
+    .prompt-line .path {
+      color: var(--cyan);
+    }
+
+    .prompt-line .cmd {
+      color: var(--fg);
+    }
+
+    .terminal-out {
+      margin: 0.5rem 0 1.1rem;
+      color: var(--comment);
+    }
+
+    .social-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .social-row {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      min-width: 0;
+      padding: 0.5rem 0.6rem;
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition:
+        border-color 0.18s,
+        background 0.18s;
+    }
+
+    .social-row:hover {
+      border-color: var(--line);
+      background: var(--bg-panel);
+    }
+
+    .social-row .const {
+      flex-shrink: 0;
+    }
+
+    .social-row .str {
+      flex: 1;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .social-row .arrow {
+      flex-shrink: 0;
+      color: var(--comment-dim);
+    }
+
+    .social-row:hover .arrow {
+      color: var(--pink);
+    }
+
+    /* =========================================================
+       STATUS BAR
+       ========================================================= */
+
+    .statusbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.2rem;
+      background: var(--bg-deep);
+      border-top: 1px solid var(--line);
+      color: var(--comment-dim);
+      font-size: 0.66rem;
+      line-height: 1.5;
+    }
+
+    .statusbar-left,
+    .statusbar-right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.1rem;
+    }
+
+    .statusbar .branch {
+      color: var(--green);
+    }
+
+    .statusbar .branch::before {
+      content: "⎇ ";
+    }
+
+    /* =========================================================
+       SCROLL REVEAL
+       ========================================================= */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition:
+        opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+        transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* =========================================================
+       TABLET
+       ========================================================= */
+
+    @media (max-width: 800px) {
+      .projects-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .video-list {
+        grid-template-columns: 1fr;
+      }
+
+      .video-list .video-row {
+        border-right: none;
+      }
+    }
+
+    /* =========================================================
+       MOBILE
+       ========================================================= */
+
+    @media (max-width: 640px) {
+      :root {
+        --titlebar-height: 38px;
+        --tabbar-height: 43px;
+      }
+
+      html {
+        scroll-padding-top: calc(
+          var(--titlebar-height) + var(--tabbar-height) + 10px
+        );
+      }
+
+      body {
+        font-size: 15px;
+      }
+
+      /* ---------- HEADER ---------- */
+
+      .titlebar {
+        padding: 0 0.8rem;
+      }
+
+      .traffic {
+        gap: 0.35rem;
+      }
+
+      .traffic span {
+        width: 9px;
+        height: 9px;
+      }
+
+      .titlebar-name {
+        padding: 0 0.35rem;
+        font-size: 0.62rem;
+      }
+
+      .titlebar-spacer {
+        width: 27px;
+      }
+
+      .tabbar {
+        overflow: hidden;
+      }
+
+      .tab:not(.tab-logo) {
+        display: none;
+      }
+
+      .tab-logo {
+        padding: 0 0.9rem;
+        font-size: 0.72rem;
+      }
+
+      .nav-burger {
+        display: flex;
+      }
+
+      /* ---------- GENERAL ---------- */
+
+      section {
+        padding: 3.25rem 0;
+      }
+
+      .section-inner {
+        width: 100%;
+        padding-left: 0.9rem;
+        padding-right: 0.9rem;
+      }
+
+      .code-block {
+        display: block;
+        width: 100%;
+      }
+
+      .gutter {
+        display: none;
+      }
+
+      .comment-label {
+        margin-bottom: 1.15rem;
+        font-size: 0.67rem;
+        line-height: 1.6;
+      }
+
+      /* ---------- HERO ---------- */
+
+      #hero {
+        padding-top: 2.75rem;
+        padding-bottom: 3rem;
+      }
+
+      .hero-code {
+        width: 100%;
+        padding-left: 0.9rem;
+        padding-right: 0.9rem;
+        font-size: 0.86rem;
+        line-height: 1.8;
+        overflow-wrap: anywhere;
+      }
+
+      .hero-code .indent,
+      .hero-code .indent2 {
+        padding-left: 0;
+      }
+
+      .hero-name-line {
+        width: 100%;
+        margin: 0.5rem 0 0.9rem;
+        padding-left: 0 !important;
+        font-size: clamp(2.25rem, 11vw, 3.4rem);
+        line-height: 1.1;
+        overflow-wrap: anywhere;
+      }
+
+      .hero-tags {
+        width: 100%;
+        gap: 0.35rem;
+        margin-top: 0.8rem;
+      }
+
+      .hero-tag {
+        max-width: 100%;
+        padding: 0.3rem 0.5rem;
+        font-size: 0.6rem;
+        line-height: 1.4;
+      }
+
+      .hero-scroll {
+        margin-top: 2.25rem;
+        font-size: 0.59rem;
+        letter-spacing: 0.05em;
+      }
+
+      /* ---------- TITLES ---------- */
+
+      h2.title {
+        width: 100%;
+        font-size: clamp(1.45rem, 7vw, 1.95rem);
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+      }
+
+      /* ---------- ABOUT ---------- */
+
+      .about-comment {
+        font-size: 0.82rem;
+        line-height: 1.85;
+      }
+
+      .about-obj {
+        margin-top: 1.7rem;
+        font-size: 0.76rem;
+        line-height: 1.9;
+      }
+
+      /* ---------- PROJECTS ---------- */
+
+      .projects-grid {
+        width: 100%;
+        margin-top: 1.15rem;
+      }
+
+      .project-card {
+        width: 100%;
+        padding: 1.2rem 0.9rem;
+      }
+
+      .project-sig {
+        padding-right: 1.4rem;
+        font-size: 0.76rem;
+        line-height: 1.6;
+        white-space: normal;
+        overflow: visible;
+        overflow-wrap: anywhere;
+      }
+
+      .project-arrow {
+        top: 1.15rem;
+        right: 0.9rem;
+      }
+
+      .project-desc {
+        margin: 0.6rem 0 0.8rem;
+        padding-left: 0;
+        font-size: 0.75rem;
+        line-height: 1.75;
+      }
+
+      .project-tags {
+        gap: 0.3rem;
+      }
+
+      .project-tags span {
+        padding: 0.18rem 0.42rem;
+        font-size: 0.58rem;
+      }
+
+      /* ---------- VIDEOS ---------- */
+
+      .explorer {
+        margin-top: 1.1rem;
+      }
+
+      .explorer-head {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.58rem;
+      }
+
+      .video-list {
+        grid-template-columns: 1fr;
+        width: 100%;
+      }
+
+      .video-row,
+      .video-list .video-row:nth-child(2n) {
+        width: 100%;
+        min-width: 0;
+        padding: 0.75rem;
+        gap: 0.7rem;
+        border-right: none;
+      }
+
+      .video-thumb-wrap {
+        width: 31vw;
+        min-width: 92px;
+        max-width: 125px;
+      }
+
+      .video-title {
+        font-size: 0.7rem;
+        line-height: 1.45;
+      }
+
+      .video-stats {
+        font-size: 0.57rem;
+        line-height: 1.5;
+      }
+
+      .video-dur {
+        font-size: 0.52rem;
+      }
+
+      .channel-line {
+        margin-top: 1rem;
+        font-size: 0.64rem;
+      }
+
+      /* ---------- EXPERIENCE ---------- */
+
+      .gitlog-head {
+        margin-bottom: 1.25rem;
+        font-size: 0.6rem;
+        line-height: 1.7;
+      }
+
+      .commit {
+        padding: 1.3rem 0;
+      }
+
+      .commit-hash {
+        font-size: 0.68rem;
+      }
+
+      .commit-meta {
+        margin: 0.3rem 0 0.8rem;
+        font-size: 0.63rem;
+        line-height: 1.8;
+      }
+
+      .commit-title {
+        margin-bottom: 0.55rem;
+        font-size: 0.83rem;
+        line-height: 1.55;
+      }
+
+      .commit-body {
+        margin-bottom: 0.8rem;
+        font-size: 0.73rem;
+        line-height: 1.85;
+      }
+
+      .commit-stat {
+        display: flex;
+        width: 100%;
+        gap: 0.25rem 0.55rem;
+        padding: 0.5rem 0.65rem;
+        font-size: 0.6rem;
+        line-height: 1.65;
+      }
+
+      /* ---------- CONNECT ---------- */
+
+      #connect {
+        padding-bottom: 2.5rem;
+      }
+
+      .terminal {
+        width: 100%;
+        max-width: none;
+        margin-top: 1.7rem;
+      }
+
+      .terminal-head {
+        padding: 0.55rem 0.75rem;
+        font-size: 0.58rem;
+      }
+
+      .terminal-body {
+        padding: 1rem 0.65rem;
+        font-size: 0.67rem;
+        line-height: 2;
+      }
+
+      .terminal-out {
+        margin: 0.45rem 0 0.9rem;
+      }
+
+      .social-list {
+        gap: 0.4rem;
+      }
+
+      .social-row {
+        width: 100%;
+        gap: 0.5rem;
+        padding: 0.5rem 0.45rem;
+        font-size: 0.64rem;
+      }
+
+      /* ---------- FOOTER ---------- */
+
+      .statusbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.6rem 0.8rem;
+        font-size: 0.55rem;
+      }
+
+      .statusbar-left,
+      .statusbar-right {
+        gap: 0.6rem;
+      }
+    }
+
+    /* =========================================================
+       VERY SMALL PHONES
+       ========================================================= */
+
+    @media (max-width: 400px) {
+      .section-inner {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+      }
+
+      .hero-code {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+        font-size: 0.81rem;
+      }
+
+      .hero-name-line {
+        font-size: 2.15rem;
+      }
+
+      .hero-tag {
+        font-size: 0.56rem;
+      }
+
+      .project-card {
+        padding-left: 0.8rem;
+        padding-right: 0.8rem;
+      }
+
+      .video-row {
+        padding: 0.65rem;
+        gap: 0.6rem;
+      }
+
+      .video-thumb-wrap {
+        width: 29vw;
+        min-width: 86px;
+      }
+
+      .video-title {
+        font-size: 0.66rem;
+      }
+
+      .video-stats {
+        font-size: 0.54rem;
+      }
+
+      .terminal-body {
+        padding-left: 0.55rem;
+        padding-right: 0.55rem;
+        font-size: 0.62rem;
+      }
+
+      .social-row {
+        font-size: 0.6rem;
+      }
+    }
+
+    /* =========================================================
+       LANDSCAPE PHONES
+       ========================================================= */
+
+    @media (max-width: 700px) and (orientation: landscape) {
+      section {
+        padding-top: 2.5rem;
+        padding-bottom: 2.5rem;
+      }
+
+      .hero-name-line {
+        font-size: 2.5rem;
+      }
+
+      .hero-scroll {
+        margin-top: 1.8rem;
+      }
+    }
+
+    /* =========================================================
+       REDUCED MOTION
+       ========================================================= */
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
+  <!-- CUSTOM CURSOR -->
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
 
-<!-- TITLE BAR -->
-<div class="titlebar">
-  <div class="traffic"><span></span><span></span><span></span></div>
-  <div class="titlebar-name">~/aaban-akhtar/portfolio — <span style="color:var(--comment-dim)">Sublime Text</span></div>
-  <div class="titlebar-spacer"></div>
-</div>
+  <!-- =======================================================
+       TITLE BAR
+       ======================================================= -->
 
-<!-- TAB BAR -->
-<div class="tabbar">
-  <a href="#hero" class="tab-logo">AA</a>
-  <a href="#about" class="tab active" data-target="about"><span class="dot"></span><span class="tab-label">about.js</span></a>
-  <a href="#projects" class="tab" data-target="projects"><span class="dot"></span><span class="tab-label">projects.js</span></a>
-  <a href="#videos" class="tab" data-target="videos"><span class="dot"></span><span class="tab-label">videos.js</span></a>
-  <a href="#experience" class="tab" data-target="experience"><span class="dot"></span><span class="tab-label">experience.log</span></a>
-  <a href="#connect" class="tab" data-target="connect"><span class="dot"></span><span class="tab-label">contact.sh</span></a>
-  <button class="nav-burger" id="burger" aria-label="Menu">☰</button>
-</div>
+  <div class="titlebar">
+    <div class="traffic">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
 
-<div class="nav-drawer" id="drawer">
-  <a href="#about" onclick="closeDrawer()"><span class="dot"></span>about.js</a>
-  <a href="#projects" onclick="closeDrawer()"><span class="dot"></span>projects.js</a>
-  <a href="#videos" onclick="closeDrawer()"><span class="dot"></span>videos.js</a>
-  <a href="#experience" onclick="closeDrawer()"><span class="dot"></span>experience.log</a>
-  <a href="#connect" onclick="closeDrawer()"><span class="dot"></span>contact.sh</a>
-</div>
+    <div class="titlebar-name">
+      ~/aaban-akhtar/portfolio —
+      <span style="color: var(--comment-dim)">Sublime Text</span>
+    </div>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="code-block">
-    <div class="gutter"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
-    <div class="section-inner hero-code">
-      <div><span class="comment-label">// portfolio.js</span></div>
-      <div><span class="kw">const</span> developer = {</div>
-      <div class="hero-name-line indent">
-        name: <span class="str" id="typed-name"></span><span class="type-cursor"></span>
+    <div class="titlebar-spacer"></div>
+  </div>
+
+  <!-- =======================================================
+       TAB BAR
+       ======================================================= -->
+
+  <nav class="tabbar" aria-label="Main navigation">
+
+    <a href="#hero" class="tab-logo">AA</a>
+
+    <a href="#about" class="tab active" data-target="about">
+      <span class="dot"></span>
+      <span class="tab-label">about.js</span>
+    </a>
+
+    <a href="#projects" class="tab" data-target="projects">
+      <span class="dot"></span>
+      <span class="tab-label">projects.js</span>
+    </a>
+
+    <a href="#videos" class="tab" data-target="videos">
+      <span class="dot"></span>
+      <span class="tab-label">videos.js</span>
+    </a>
+
+    <a href="#experience" class="tab" data-target="experience">
+      <span class="dot"></span>
+      <span class="tab-label">experience.log</span>
+    </a>
+
+    <a href="#connect" class="tab" data-target="connect">
+      <span class="dot"></span>
+      <span class="tab-label">contact.sh</span>
+    </a>
+
+    <button
+      class="nav-burger"
+      id="burger"
+      type="button"
+      aria-label="Open navigation menu"
+      aria-expanded="false"
+      aria-controls="drawer"
+    >
+      ☰
+    </button>
+
+  </nav>
+
+  <!-- MOBILE DRAWER -->
+
+  <nav class="nav-drawer" id="drawer" aria-label="Mobile navigation">
+
+    <a href="#about">
+      <span class="dot"></span>
+      about.js
+    </a>
+
+    <a href="#projects">
+      <span class="dot"></span>
+      projects.js
+    </a>
+
+    <a href="#videos">
+      <span class="dot"></span>
+      videos.js
+    </a>
+
+    <a href="#experience">
+      <span class="dot"></span>
+      experience.log
+    </a>
+
+    <a href="#connect">
+      <span class="dot"></span>
+      contact.sh
+    </a>
+
+  </nav>
+
+  <!-- =======================================================
+       HERO
+       ======================================================= -->
+
+  <section id="hero">
+
+    <div class="code-block">
+
+      <div class="gutter">
+        <span>1</span>
+        <span>2</span>
+        <span>3</span>
+        <span>4</span>
+        <span>5</span>
+        <span>6</span>
+        <span>7</span>
       </div>
-      <div class="indent"><span class="type">role</span>: <span class="str">"Student, builder"</span>,</div>
-      <div class="indent"><span class="type">focus</span>: [<span class="str">"systems"</span>, <span class="str">"compilers"</span>, <span class="str">"low-level"</span>],</div>
-      <div>};</div>
-      <div class="hero-tags">
-        <span class="hero-tag">// competitive robotics</span>
-        <span class="hero-tag">// C / C++ / ASM</span>
-        <span class="hero-tag">// builds stuff for fun</span>
-      </div>
-      <div class="hero-scroll"><span class="arrow">↓</span> scroll to continue reading</div>
-    </div>
-  </div>
-</section>
 
-<!-- ABOUT -->
-<section id="about">
-  <div class="code-block">
-    <div class="gutter"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span></div>
-    <div class="section-inner">
-      <h2 class="title reveal"><span class="kw">function</span> <span class="fn">about</span><span class="paren">()</span> {</h2>
-      <div class="about-comment reveal" style="transition-delay:.08s">
-        <span class="comment-open">/*</span><br/>
-         * I'm interested in how things work at a low level — how computers execute
-         <br/>* code, how filesystems store data, how languages get compiled. Most of
-         <br/>* my projects are me trying to answer those questions by building the
-         <br/>* thing myself.
-         <br/><span class="comment-open">*</span>
-         <br/>* Outside of that, I've spent years doing competitive robotics and ran
-         <br/>* a small PC business on the side. I like figuring things out as I go.
-        <br/><span class="comment-close">*/</span>
-      </div>
-      <div class="about-obj reveal" style="transition-delay:.14s">
-        <span class="brace">return {</span><br/>
-        &nbsp;&nbsp;<span class="key">school</span>: <span class="str">"student"</span>,<br/>
-        &nbsp;&nbsp;<span class="key">interests</span>: [<span class="str">"OS dev"</span>, <span class="str">"compilers"</span>, <span class="str">"emulation"</span>, <span class="str">"robotics"</span>],<br/>
-        &nbsp;&nbsp;<span class="key">sideHustle</span>: <span class="str">"built &amp; sold 40+ custom PCs"</span>,<br/>
-        &nbsp;&nbsp;<span class="key">mindset</span>: <span class="str">"figure it out as I go"</span>,<br/>
-        <span class="brace">};</span>
-      </div>
-      <div class="reveal" style="transition-delay:.18s; margin-top:1rem; color:var(--comment);">}</div>
-    </div>
-  </div>
-</section>
+      <div class="section-inner hero-code">
 
-<!-- PROJECTS -->
-<section id="projects">
-  <div class="code-block">
-    <div class="gutter"><span>1</span><span>2</span></div>
-    <div class="section-inner">
-      <h2 class="title reveal"><span class="kw">const</span> <span class="fn">projects</span> <span class="paren">=</span></h2>
-      <span class="comment-label reveal" style="transition-delay:.05s">// selected work, sorted by "things I nerd out about"</span>
-    </div>
-  </div>
+        <div>
+          <span class="comment-label">// portfolio.js</span>
+        </div>
 
-  <div class="section-inner">
-    <div class="projects-grid reveal" style="transition-delay:.1s">
+        <div>
+          <span class="kw">const</span> me = {
+        </div>
 
-      <a class="project-card" href="https://github.com/aabanakhtar/twig-os" target="_blank" rel="noopener">
-        <span class="project-arrow">↗</span>
-        <div class="project-sig"><span class="kw">class</span> <span class="fn-name">TwigOS</span> <span class="kw">extends</span> Kernel {</div>
-        <p class="project-desc">32-bit protected mode, single-tasking OS built from scratch for educational purposes. Runs on QEMU.</p>
-        <div class="project-tags"><span>C</span><span>ASM</span><span>QEMU</span></div>
-      </a>
+        <div class="hero-name-line indent">
+          name:
+          <span class="str" id="typed-name"></span><span class="type-cursor"></span>
+        </div>
 
-      <a class="project-card" href="https://github.com/aabanakhtar/mini-c-compiler" target="_blank" rel="noopener">
-        <span class="project-arrow">↗</span>
-        <div class="project-sig"><span class="fn-name">compile</span>(source: <span class="type">C</span>): <span class="type">LLVM_IR</span> {</div>
-        <p class="project-desc">LLVM-based compiler for a subset of C — lexer, parser, IR emission, full pipeline.</p>
-        <div class="project-tags"><span>C++</span><span>LLVM</span><span>Compilers</span></div>
-      </a>
+        <div class="indent">
+          <span class="type">role</span>:
+          <span class="str">"High School Student"</span>,
+        </div>
 
-      <a class="project-card" href="https://github.com/aabanakhtar/mos-6502-emulator" target="_blank" rel="noopener">
-        <span class="project-arrow">↗</span>
-        <div class="project-sig"><span class="kw">class</span> <span class="fn-name">MOS6502</span> <span class="kw">implements</span> CPU {</div>
-        <p class="project-desc">Cycle-accurate emulator for the MOS 6502 microprocessor with Catch2 unit tests.</p>
-        <div class="project-tags"><span>C++</span><span>Emulation</span><span>Catch2</span></div>
-      </a>
+        <div class="indent">
+          <span class="type">focus</span>: 
+          <span class="str">"building cool things"</span>
+          ,
+        </div>
 
-      <a class="project-card" href="https://github.com/aabanakhtar/vortex-lang" target="_blank" rel="noopener">
-        <span class="project-arrow">↗</span>
-        <div class="project-sig"><span class="kw">struct</span> <span class="fn-name">VortexVM</span> : <span class="type">StackMachine</span> {</div>
-        <p class="project-desc">Bytecode-compiled language built on a custom stack-based VM in C++20.</p>
-        <div class="project-tags"><span>C++20</span><span>Lang Design</span><span>VM</span></div>
-      </a>
+        <div>
+          };
+        </div>
 
-      <a class="project-card" href="https://github.com/aabanakhtar/http-threadpool-server" target="_blank" rel="noopener">
-        <span class="project-arrow">↗</span>
-        <div class="project-sig"><span class="fn-name">handle</span>(req: <span class="type">Request</span>): <span class="type">ThreadPool</span> {</div>
-        <p class="project-desc">HTTP server using custom thread pools to handle concurrent client requests.</p>
-        <div class="project-tags"><span>C++</span><span>Networking</span><span>Concurrency</span></div>
-      </a>
+        <div class="hero-tags">
+          <span class="hero-tag">// currently enjoying competitive robotics</span>
+          <span class="hero-tag">// C / C++ / Python</span>
+          <span class="hero-tag">// building stuff for funsies</span>
+        </div>
 
-    </div>
-  </div>
-</section>
-
-<!-- VIDEOS -->
-<section id="videos">
-  <div class="code-block">
-    <div class="gutter"><span>1</span><span>2</span></div>
-    <div class="section-inner">
-      <h2 class="title reveal"><span class="kw">import</span> <span class="fn">videos</span> <span class="kw">from</span> <span class="str">"@youtube/aabum1"</span>;</h2>
-      <span class="comment-label reveal" style="transition-delay:.05s">// build logs, project walkthroughs, and a couple of robotics highlights</span>
-    </div>
-  </div>
-
-  <div class="section-inner">
-    <div class="explorer reveal" style="transition-delay:.1s">
-      <div class="explorer-head">▾ /aabum1/videos &nbsp;&nbsp;<span style="color:var(--comment-dim)">6 files shown</span></div>
-      <div class="video-list">
-
-        <a class="video-row" href="https://www.youtube.com/watch?v=UIIUolxwzdU" target="_blank" rel="noopener">
-          <div class="video-thumb-wrap">
-            <img src="https://img.youtube.com/vi/UIIUolxwzdU/hqdefault.jpg" alt="C++ HTTP Server Project Overview thumbnail" loading="lazy" />
-            <span class="video-dur">29:01</span>
-          </div>
-          <div class="video-meta">
-            <p class="video-title">C++ HTTP Server Project Overview</p>
-            <p class="video-stats"><span class="num">107</span> views · 2 months ago</p>
-          </div>
-        </a>
-
-        <a class="video-row" href="https://www.youtube.com/watch?v=rlQPR69gjhY" target="_blank" rel="noopener">
-          <div class="video-thumb-wrap">
-            <img src="https://img.youtube.com/vi/rlQPR69gjhY/hqdefault.jpg" alt="Building a C Compiler thumbnail" loading="lazy" />
-            <span class="video-dur">35:13</span>
-          </div>
-          <div class="video-meta">
-            <p class="video-title">Building a C Compiler because cool</p>
-            <p class="video-stats"><span class="num">51</span> views · 11 months ago</p>
-          </div>
-        </a>
-
-        <a class="video-row" href="https://www.youtube.com/watch?v=HIYumfzdDtw" target="_blank" rel="noopener">
-          <div class="video-thumb-wrap">
-            <img src="https://img.youtube.com/vi/HIYumfzdDtw/hqdefault.jpg" alt="Emulating the 6502 CPU in C++ thumbnail" loading="lazy" />
-            <span class="video-dur">17:58</span>
-          </div>
-          <div class="video-meta">
-            <p class="video-title">Emulating the 6502 CPU in C++</p>
-            <p class="video-stats"><span class="num">153</span> views · 1 year ago</p>
-          </div>
-        </a>
-
-        <a class="video-row" href="https://www.youtube.com/watch?v=iQBysbD-S20" target="_blank" rel="noopener">
-          <div class="video-thumb-wrap">
-            <img src="https://img.youtube.com/vi/iQBysbD-S20/hqdefault.jpg" alt="100 Days of Code stack VM interpreter thumbnail" loading="lazy" />
-            <span class="video-dur">1:03:13</span>
-          </div>
-          <div class="video-meta">
-            <p class="video-title">100 Days of Code (1) — Writing a Stack VM Based Interpreter</p>
-            <p class="video-stats"><span class="num">68</span> views · 1 year ago</p>
-          </div>
-        </a>
-
-        <a class="video-row" href="https://www.youtube.com/watch?v=onml5KMneeM" target="_blank" rel="noopener">
-          <div class="video-thumb-wrap">
-            <img src="https://img.youtube.com/vi/onml5KMneeM/hqdefault.jpg" alt="LLM notes generator demo thumbnail" loading="lazy" />
-            <span class="video-dur">2:55</span>
-          </div>
-          <div class="video-meta">
-            <p class="video-title">LLM Application Demo — Two Column Notes Generator</p>
-            <p class="video-stats"><span class="num">48</span> views · 1 year ago</p>
-          </div>
-        </a>
-
-        <a class="video-row" href="https://www.youtube.com/watch?v=Mj50idTULtk" target="_blank" rel="noopener">
-          <div class="video-thumb-wrap">
-            <img src="https://img.youtube.com/vi/Mj50idTULtk/hqdefault.jpg" alt="FTC Decode autonomous highlight thumbnail" loading="lazy" />
-            <span class="video-dur">0:25</span>
-          </div>
-          <div class="video-meta">
-            <p class="video-title">FIRST Decode 12 Ball Autonomous — Team 23532</p>
-            <p class="video-stats"><span class="num">552</span> views · 9 months ago</p>
-          </div>
-        </a>
+        <div class="hero-scroll">
+          <span class="arrow">↓</span>
+          scroll to continue reading
+        </div>
 
       </div>
     </div>
-    <p class="channel-line reveal" style="transition-delay:.16s">
-      more on the channel → <a href="https://www.youtube.com/@aabum1" target="_blank" rel="noopener">@aabum1</a>, 47 videos, 99 subscribers
-    </p>
-  </div>
-</section>
+  </section>
 
-<!-- EXPERIENCE -->
-<section id="experience">
-  <div class="code-block">
-    <div class="gutter"><span>1</span><span>2</span></div>
-    <div class="section-inner">
-      <h2 class="title reveal"><span class="kw">$</span> <span class="fn">git</span> log --stat</h2>
-      <span class="comment-label reveal" style="transition-delay:.05s">// experience.log</span>
-    </div>
-  </div>
+  <!-- =======================================================
+       ABOUT
+       ======================================================= -->
 
-  <div class="section-inner">
-    <div class="gitlog-head reveal" style="transition-delay:.08s">On branch <span style="color:var(--green)">main</span> · showing 2 of 2 commits</div>
+  <section id="about">
 
-    <div class="commit reveal" style="transition-delay:.1s">
-      <p class="commit-hash">7f3a1c9</p>
-      <p class="commit-meta">
-        <span class="field">Author:</span> <span class="val">Aaban Akhtar</span> &lt;FTC 20625 / 23532 / 23423&gt;<br/>
-        <span class="field">Role:</span>&nbsp;&nbsp;&nbsp; <span class="val">Team Lead</span>
-      </p>
-      <p class="commit-title">FTC Robotics — led team to World Championship</p>
-      <p class="commit-body">
-        Led a 10-member team to the FTC World Championship. Designed and programmed 5 robots across multiple seasons. Competed at regional, state, and international levels. Mentored new teams, performed STEM outreach at events with 200+ attendees, managed logistics, sponsorships, and a detailed engineering portfolio.
-      </p>
-      <div class="commit-stat">
-        <span class="plus">+ NC State Finalist Captain</span>
-        <span class="label">| FTC World Championship qualifier</span>
+    <div class="code-block">
+
+      <div class="gutter">
+        <span>1</span>
+        <span>2</span>
+        <span>3</span>
+        <span>4</span>
+        <span>5</span>
+        <span>6</span>
+        <span>7</span>
+        <span>8</span>
+        <span>9</span>
+        <span>10</span>
+        <span>11</span>
       </div>
-    </div>
 
-    <div class="commit reveal" style="transition-delay:.16s">
-      <p class="commit-hash">2b8e4d0</p>
-      <p class="commit-meta">
-        <span class="field">Author:</span> <span class="val">Aaban Akhtar</span> &lt;Sole Proprietorship&gt;<br/>
-        <span class="field">Role:</span>&nbsp;&nbsp;&nbsp; <span class="val">Founder, PC Business</span>
-      </p>
-      <p class="commit-title">Built and sold custom PCs on the Jawa platform</p>
-      <p class="commit-body">
-        Built, configured, and sold 40+ custom gaming PCs. Managed pricing, shipping, client support, and risk end-to-end. Maintained a 5-star rating and reached top 5% seller status on Jawa in 2025.
-      </p>
-      <div class="commit-stat">
-        <span class="plus">+ $18K revenue</span>
-        <span class="label">| Top 5% seller · 40+ builds shipped</span>
-      </div>
-    </div>
-  </div>
-</section>
+      <div class="section-inner">
 
-<!-- CONNECT -->
-<section id="connect">
-  <div class="section-inner">
-    <span class="comment-label reveal">// contact.sh</span>
-    <h2 class="title reveal" style="transition-delay:.05s">Let's connect.</h2>
+        <h2 class="title reveal">
+          <span class="kw">function</span>
+          <span class="fn">about</span><span class="paren">()</span> {
+        </h2>
 
-    <div class="terminal reveal" style="transition-delay:.1s; margin-top:2rem;">
-      <div class="terminal-head">bash — 80×24</div>
-      <div class="terminal-body">
-        <div class="prompt-line"><span class="prompt">aaban@portfolio</span>:<span class="path">~</span>$ <span class="cmd">cat socials.txt</span></div>
-        <div class="terminal-out">// click a line to open</div>
-        <div class="social-list">
-          <a class="social-row" href="https://github.com/aabanakhtar" target="_blank" rel="noopener">
-            <span class="const">github:</span> <span class="str">"@aabanakhtar"</span> <span class="arrow">↗</span>
-          </a>
-          <a class="social-row" href="https://www.instagram.com/aabanakhtar19" target="_blank" rel="noopener">
-            <span class="const">instagram:</span> <span class="str">"@aabanakhtar19"</span> <span class="arrow">↗</span>
-          </a>
-          <a class="social-row" href="https://www.youtube.com/@aabum1" target="_blank" rel="noopener">
-            <span class="const">youtube:</span> <span class="str">"@aabum1"</span> <span class="arrow">↗</span>
-          </a>
+        <div
+          class="about-comment reveal"
+          style="transition-delay: 0.08s"
+        >
+          <span class="comment-open">/*</span><br />
+
+          * I'm interested in how things work at a low level — how computers execute
+          <br />
+
+          * code, how filesystems store data, how languages get compiled. Most of
+          <br />
+
+          * my projects are me trying to answer those questions by building the
+          <br />
+
+          * thing myself.
+          <br />
+
+          <span class="comment-open">*</span>
+          <br />
+
+          * Outside of that, I've spent years doing competitive robotics and ran
+          <br />
+
+          * a small PC business on the side. I like figuring things out as I go.
+          <br />
+
+          <span class="comment-close">*/</span>
+        </div>
+        <div
+          class="about-obj reveal"
+          style="transition-delay: 0.14s"
+        </div>
+        <div
+          class="reveal"
+          style="
+            transition-delay: 0.18s;
+            margin-top: 1rem;
+            color: var(--comment);
+          "
+        >
+          <div style="color:white;">}</div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- STATUS BAR -->
-<footer class="statusbar">
-  <div class="statusbar-left">
-    <span class="branch">main</span>
-    <span>UTF-8</span>
-    <span>JetBrains Mono</span>
-  </div>
-  <div class="statusbar-right">
-    <span>© 2026 Aaban Akhtar</span>
-  </div>
-</footer>
+  <!-- =======================================================
+       PROJECTS
+       ======================================================= -->
 
-<script>
-  // ── MOBILE NAV ──
-  const burger = document.getElementById('burger');
-  const drawer = document.getElementById('drawer');
-  burger.addEventListener('click', () => drawer.classList.toggle('open'));
-  function closeDrawer() { drawer.classList.remove('open'); }
+  <section id="projects">
 
-  // ── CURSOR ──
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursor-ring');
-  if (cursor && ring) {
-    let mx = 0, my = 0, rx = 0, ry = 0;
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    (function animCursor() {
-      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
-      rx += (mx - rx) * 0.14; ry += (my - ry) * 0.14;
-      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-      requestAnimationFrame(animCursor);
-    })();
-  }
+    <div class="code-block">
 
-  // ── SCROLL REVEAL ──
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+      <div class="gutter">
+        <span>1</span>
+        <span>2</span>
+      </div>
 
-  // ── TYPED NAME ──
-  const typedEl = document.getElementById('typed-name');
-  const fullName = '"Aaban Akhtar"';
-  let ti = 0;
-  function typeName() {
-    if (ti <= fullName.length) {
-      typedEl.textContent = fullName.slice(0, ti);
-      ti++;
-      setTimeout(typeName, 65);
+      <div class="section-inner">
+
+        <h2 class="title reveal">
+          <span class="kw">const</span>
+          <span class="fn">projects</span>
+          <span class="paren">=</span>
+        </h2>
+
+        <span
+          class="comment-label reveal"
+          style="transition-delay: 0.05s"
+        >
+          // selected work, sorted by "things I nerd out about"
+        </span>
+
+      </div>
+    </div>
+
+    <div class="section-inner">
+
+      <div
+        class="projects-grid reveal"
+        style="transition-delay: 0.1s"
+      >
+
+        <!-- PROJECT 1 -->
+
+        <a
+          class="project-card"
+          href="https://github.com/aabanakhtar/twig-os"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+
+          <span class="project-arrow">↗</span>
+
+          <div class="project-sig">
+            <span class="kw">class</span>
+            <span class="fn-name">TwigOS</span>
+            <span class="kw">extends</span>
+            Kernel {
+          </div>
+
+          <p class="project-desc">
+            32-bit protected mode, single-tasking OS built from scratch
+            for educational purposes. Runs on QEMU.
+          </p>
+
+          <div class="project-tags">
+            <span>C</span>
+            <span>ASM</span>
+            <span>QEMU</span>
+          </div>
+
+        </a>
+
+        <!-- PROJECT 2 -->
+
+        <a
+          class="project-card"
+          href="https://github.com/aabanakhtar/mini-c-compiler"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+
+          <span class="project-arrow">↗</span>
+
+          <div class="project-sig">
+            <span class="fn-name">compile</span>(source:
+            <span class="type">C</span>):
+            <span class="type">LLVM_IR</span> {
+          </div>
+
+          <p class="project-desc">
+            LLVM-based compiler for a subset of C — lexer, parser,
+            IR emission, full pipeline.
+          </p>
+
+          <div class="project-tags">
+            <span>C++</span>
+            <span>LLVM</span>
+            <span>Compilers</span>
+          </div>
+
+        </a>
+
+        <!-- PROJECT 3 -->
+
+        <a
+          class="project-card"
+          href="https://github.com/aabanakhtar/mos-6502-emulator"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+
+          <span class="project-arrow">↗</span>
+
+          <div class="project-sig">
+            <span class="kw">class</span>
+            <span class="fn-name">MOS6502</span>
+            <span class="kw">implements</span>
+            CPU {
+          </div>
+
+          <p class="project-desc">
+            Cycle-accurate emulator for the MOS 6502 microprocessor
+            with Catch2 unit tests.
+          </p>
+
+          <div class="project-tags">
+            <span>C++</span>
+            <span>Emulation</span>
+            <span>Catch2</span>
+          </div>
+
+        </a>
+
+        <!-- PROJECT 4 -->
+
+        <a
+          class="project-card"
+          href="https://github.com/aabanakhtar/vortex-lang"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+
+          <span class="project-arrow">↗</span>
+
+          <div class="project-sig">
+            <span class="kw">struct</span>
+            <span class="fn-name">VortexVM</span> :
+            <span class="type">StackMachine</span> {
+          </div>
+
+          <p class="project-desc">
+            Bytecode-compiled language built on a custom
+            stack-based VM in C++20.
+          </p>
+
+          <div class="project-tags">
+            <span>C++20</span>
+            <span>Lang Design</span>
+            <span>VM</span>
+          </div>
+
+        </a>
+
+        <!-- PROJECT 5 -->
+
+        <a
+          class="project-card"
+          href="https://github.com/aabanakhtar/http-threadpool-server"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+
+          <span class="project-arrow">↗</span>
+
+          <div class="project-sig">
+            <span class="fn-name">handle</span>(req:
+            <span class="type">Request</span>):
+            <span class="type">ThreadPool</span> {
+          </div>
+
+          <p class="project-desc">
+            HTTP server using custom thread pools to handle
+            concurrent client requests.
+          </p>
+
+          <div class="project-tags">
+            <span>C++</span>
+            <span>Networking</span>
+            <span>Concurrency</span>
+          </div>
+
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- =======================================================
+       VIDEOS
+       ======================================================= -->
+
+  <section id="videos">
+
+    <div class="code-block">
+
+      <div class="gutter">
+        <span>1</span>
+        <span>2</span>
+      </div>
+
+      <div class="section-inner">
+
+        <h2 class="title reveal">
+          <span class="kw">import</span>
+          <span class="fn">videos</span>
+          <span class="kw">from</span>
+          <span class="str">"@youtube/aabum1"</span>;
+        </h2>
+
+        <span
+          class="comment-label reveal"
+          style="transition-delay: 0.05s"
+        >
+          // build logs, project walkthroughs, and a couple of robotics highlights
+        </span>
+
+      </div>
+    </div>
+
+    <div class="section-inner">
+
+      <div
+        class="explorer reveal"
+        style="transition-delay: 0.1s"
+      >
+
+        <div class="explorer-head">
+          ▾ /aabum1/videos
+          &nbsp;&nbsp;
+          <span style="color: var(--comment-dim)">
+            6 files shown
+          </span>
+        </div>
+
+        <div class="video-list">
+
+          <!-- VIDEO 1 -->
+
+          <a
+            class="video-row"
+            href="https://www.youtube.com/watch?v=UIIUolxwzdU"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+
+            <div class="video-thumb-wrap">
+              <img
+                src="https://img.youtube.com/vi/UIIUolxwzdU/hqdefault.jpg"
+                alt="C++ HTTP Server Project Overview thumbnail"
+                loading="lazy"
+              />
+
+              <span class="video-dur">29:01</span>
+            </div>
+
+            <div class="video-meta">
+
+              <p class="video-title">
+                C++ HTTP Server Project Overview
+              </p>
+
+              <p class="video-stats">
+                <span class="num">107</span>
+                views · 2 months ago
+              </p>
+
+            </div>
+
+          </a>
+
+          <!-- VIDEO 2 -->
+
+          <a
+            class="video-row"
+            href="https://www.youtube.com/watch?v=rlQPR69gjhY"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+
+            <div class="video-thumb-wrap">
+              <img
+                src="https://img.youtube.com/vi/rlQPR69gjhY/hqdefault.jpg"
+                alt="Building a C Compiler thumbnail"
+                loading="lazy"
+              />
+
+              <span class="video-dur">35:13</span>
+            </div>
+
+            <div class="video-meta">
+
+              <p class="video-title">
+                Building a C Compiler because cool
+              </p>
+
+              <p class="video-stats">
+                <span class="num">51</span>
+                views · 11 months ago
+              </p>
+
+            </div>
+
+          </a>
+
+          <!-- VIDEO 3 -->
+
+          <a
+            class="video-row"
+            href="https://www.youtube.com/watch?v=HIYumfzdDtw"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+
+            <div class="video-thumb-wrap">
+              <img
+                src="https://img.youtube.com/vi/HIYumfzdDtw/hqdefault.jpg"
+                alt="Emulating the 6502 CPU in C++ thumbnail"
+                loading="lazy"
+              />
+
+              <span class="video-dur">17:58</span>
+            </div>
+
+            <div class="video-meta">
+
+              <p class="video-title">
+                Emulating the 6502 CPU in C++
+              </p>
+
+              <p class="video-stats">
+                <span class="num">153</span>
+                views · 1 year ago
+              </p>
+
+            </div>
+
+          </a>
+
+          <!-- VIDEO 4 -->
+
+          <a
+            class="video-row"
+            href="https://www.youtube.com/watch?v=iQBysbD-S20"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+
+            <div class="video-thumb-wrap">
+              <img
+                src="https://img.youtube.com/vi/iQBysbD-S20/hqdefault.jpg"
+                alt="100 Days of Code stack VM interpreter thumbnail"
+                loading="lazy"
+              />
+
+              <span class="video-dur">1:03:13</span>
+            </div>
+
+            <div class="video-meta">
+
+              <p class="video-title">
+                100 Days of Code (1) — Writing a Stack VM Based Interpreter
+              </p>
+
+              <p class="video-stats">
+                <span class="num">68</span>
+                views · 1 year ago
+              </p>
+
+            </div>
+
+          </a>
+
+          <!-- VIDEO 5 -->
+
+          <a
+            class="video-row"
+            href="https://www.youtube.com/watch?v=onml5KMneeM"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+
+            <div class="video-thumb-wrap">
+              <img
+                src="https://img.youtube.com/vi/onml5KMneeM/hqdefault.jpg"
+                alt="LLM notes generator demo thumbnail"
+                loading="lazy"
+              />
+
+              <span class="video-dur">2:55</span>
+            </div>
+
+            <div class="video-meta">
+
+              <p class="video-title">
+                LLM Application Demo — Two Column Notes Generator
+              </p>
+
+              <p class="video-stats">
+                <span class="num">48</span>
+                views · 1 year ago
+              </p>
+
+            </div>
+
+          </a>
+
+          <!-- VIDEO 6 -->
+
+          <a
+            class="video-row"
+            href="https://www.youtube.com/watch?v=Mj50idTULtk"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+
+            <div class="video-thumb-wrap">
+              <img
+                src="https://img.youtube.com/vi/Mj50idTULtk/hqdefault.jpg"
+                alt="FTC Decode autonomous highlight thumbnail"
+                loading="lazy"
+              />
+
+              <span class="video-dur">0:25</span>
+            </div>
+
+            <div class="video-meta">
+
+              <p class="video-title">
+                FIRST Decode 12 Ball Autonomous — Team 23532
+              </p>
+
+              <p class="video-stats">
+                <span class="num">552</span>
+                views · 9 months ago
+              </p>
+
+            </div>
+
+          </a>
+
+        </div>
+      </div>
+
+      <p
+        class="channel-line reveal"
+        style="transition-delay: 0.16s"
+      >
+        more on the channel →
+        <a
+          href="https://www.youtube.com/@aabum1"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          @aabum1
+        </a>,
+        47 videos, 99 subscribers
+      </p>
+
+    </div>
+  </section>
+
+  <!-- =======================================================
+       EXPERIENCE
+       ======================================================= -->
+
+  <section id="experience">
+
+    <div class="code-block">
+
+      <div class="gutter">
+        <span>1</span>
+        <span>2</span>
+      </div>
+
+      <div class="section-inner">
+
+        <h2 class="title reveal">
+          <span class="kw">$</span>
+          <span class="fn">git</span> log --stat
+        </h2>
+
+        <span
+          class="comment-label reveal"
+          style="transition-delay: 0.05s"
+        >
+          // experience.log
+        </span>
+
+      </div>
+    </div>
+
+    <div class="section-inner">
+
+      <div
+        class="gitlog-head reveal"
+        style="transition-delay: 0.08s"
+      >
+        On branch
+        <span style="color: var(--green)">main</span>
+        · showing 2 of 2 commits
+      </div>
+
+      <!-- EXPERIENCE 1 -->
+
+      <div
+        class="commit reveal"
+        style="transition-delay: 0.1s"
+      >
+
+        <p class="commit-hash">7f3a1c9</p>
+
+        <p class="commit-meta">
+
+          <span class="field">Author:</span>
+          <span class="val">Aaban Akhtar</span>
+          &lt;FTC 20625 / 23532 / 23423&gt;
+
+          <br />
+
+          <span class="field">Role:</span>
+          &nbsp;&nbsp;&nbsp;
+          <span class="val">Team Lead</span>
+
+        </p>
+
+        <p class="commit-title">
+          FTC Robotics — led team to World Championship
+        </p>
+
+        <p class="commit-body">
+          Led a 10-member team to the FTC World Championship.
+          Designed and programmed 5 robots across multiple seasons.
+          Competed at regional, state, and international levels.
+          Mentored new teams, performed STEM outreach at events
+          with 200+ attendees, managed logistics, sponsorships,
+          and a detailed engineering portfolio.
+        </p>
+
+        <div class="commit-stat">
+          <span class="plus">
+            + NC State Finalist Captain
+          </span>
+
+          <span class="label">
+            | FTC World Championship qualifier
+          </span>
+        </div>
+
+      </div>
+
+      <!-- EXPERIENCE 2 -->
+
+      <div
+        class="commit reveal"
+        style="transition-delay: 0.16s"
+      >
+
+        <p class="commit-hash">2b8e4d0</p>
+
+        <p class="commit-meta">
+
+          <span class="field">Author:</span>
+          <span class="val">Aaban Akhtar</span>
+          &lt;Sole Proprietorship&gt;
+
+          <br />
+
+          <span class="field">Role:</span>
+          &nbsp;&nbsp;&nbsp;
+          <span class="val">Founder, PC Business</span>
+
+        </p>
+
+        <p class="commit-title">
+          Built and sold custom PCs on the Jawa platform
+        </p>
+
+        <p class="commit-body">
+          Built, configured, and sold 40+ custom gaming PCs.
+          Managed pricing, shipping, client support, and risk
+          end-to-end. Maintained a 5-star rating and reached
+          top 5% seller status on Jawa in 2025.
+        </p>
+
+        <div class="commit-stat">
+
+          <span class="plus">
+            + $18K revenue
+          </span>
+
+          <span class="label">
+            | Top 5% seller · 40+ builds shipped
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =======================================================
+       CONNECT
+       ======================================================= -->
+
+  <section id="connect">
+
+    <div class="section-inner">
+
+      <span class="comment-label reveal">
+        // contact.sh
+      </span>
+
+      <h2
+        class="title reveal"
+        style="transition-delay: 0.05s"
+      >
+        Let's connect.
+      </h2>
+
+      <div
+        class="terminal reveal"
+        style="transition-delay: 0.1s"
+      >
+
+        <div class="terminal-head">
+          bash — 80×24
+        </div>
+
+        <div class="terminal-body">
+
+          <div class="prompt-line">
+
+            <span class="prompt">
+              aaban@portfolio
+            </span>
+
+            :
+
+            <span class="path">~</span>
+
+            $
+
+            <span class="cmd">
+              cat socials.txt
+            </span>
+
+          </div>
+
+          <div class="terminal-out">
+            // click a line to open
+          </div>
+
+          <div class="social-list">
+
+            <a
+              class="social-row"
+              href="https://github.com/aabanakhtar"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="const">github:</span>
+              <span class="str">"@aabanakhtar"</span>
+              <span class="arrow">↗</span>
+            </a>
+
+            <a
+              class="social-row"
+              href="https://www.instagram.com/aabanakhtar19"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="const">instagram:</span>
+              <span class="str">"@aabanakhtar19"</span>
+              <span class="arrow">↗</span>
+            </a>
+
+            <a
+              class="social-row"
+              href="https://www.youtube.com/@aabum1"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="const">youtube:</span>
+              <span class="str">"@aabum1"</span>
+              <span class="arrow">↗</span>
+            </a>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- =======================================================
+       STATUS BAR
+       ======================================================= -->
+
+  <footer class="statusbar">
+
+    <div class="statusbar-left">
+
+      <span class="branch">
+        main
+      </span>
+
+      <span>
+        UTF-8
+      </span>
+
+      <span>
+        JetBrains Mono
+      </span>
+
+    </div>
+
+    <div class="statusbar-right">
+
+      <span>
+        © 2026 Aaban Akhtar
+      </span>
+
+    </div>
+
+  </footer>
+
+  <!-- =======================================================
+       JAVASCRIPT
+       ======================================================= -->
+
+  <script>
+    /* =======================================================
+       MOBILE NAV
+       ======================================================= */
+
+    const burger = document.getElementById("burger");
+    const drawer = document.getElementById("drawer");
+
+    function closeDrawer() {
+      drawer.classList.remove("open");
+      burger.setAttribute("aria-expanded", "false");
     }
-  }
-  setTimeout(typeName, 400);
 
-  // ── ACTIVE TAB ON SCROLL ──
-  const tabs = document.querySelectorAll('.tab[data-target]');
-  const sections = document.querySelectorAll('section[id]');
-  window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(s => { if (window.scrollY >= s.offsetTop - 220) current = s.id; });
-    tabs.forEach(t => t.classList.toggle('active', t.dataset.target === current));
-  }, { passive: true });
-</script>
+    burger.addEventListener("click", () => {
+      const isOpen = drawer.classList.toggle("open");
+      burger.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    drawer.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", closeDrawer);
+    });
+
+    /* Close drawer when clicking outside it */
+
+    document.addEventListener("click", (event) => {
+      if (
+        drawer.classList.contains("open") &&
+        !drawer.contains(event.target) &&
+        !burger.contains(event.target)
+      ) {
+        closeDrawer();
+      }
+    });
+
+    /* =======================================================
+       CUSTOM CURSOR
+       ======================================================= */
+
+    const cursor = document.getElementById("cursor");
+    const ring = document.getElementById("cursor-ring");
+
+    if (cursor && ring && window.matchMedia("(pointer: fine)").matches) {
+      let mx = 0;
+      let my = 0;
+
+      let rx = 0;
+      let ry = 0;
+
+      document.addEventListener("mousemove", (event) => {
+        mx = event.clientX;
+        my = event.clientY;
+      });
+
+      function animateCursor() {
+        cursor.style.left = mx + "px";
+        cursor.style.top = my + "px";
+
+        rx += (mx - rx) * 0.14;
+        ry += (my - ry) * 0.14;
+
+        ring.style.left = rx + "px";
+        ring.style.top = ry + "px";
+
+        requestAnimationFrame(animateCursor);
+      }
+
+      animateCursor();
+    }
+
+    /* =======================================================
+       SCROLL REVEAL
+       ======================================================= */
+
+    const revealElements = document.querySelectorAll(".reveal");
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.08,
+      }
+    );
+
+    revealElements.forEach((element) => {
+      observer.observe(element);
+    });
+
+    /* =======================================================
+       TYPED NAME
+       ======================================================= */
+
+    const typedEl = document.getElementById("typed-name");
+
+    const fullName = '"Aaban Akhtar"';
+
+    let typeIndex = 0;
+
+    function typeName() {
+      if (typeIndex <= fullName.length) {
+        typedEl.textContent = fullName.slice(0, typeIndex);
+
+        typeIndex++;
+
+        setTimeout(typeName, 65);
+      }
+    }
+
+    setTimeout(typeName, 400);
+
+    /* =======================================================
+       ACTIVE TAB ON SCROLL
+       ======================================================= */
+
+    const tabs = document.querySelectorAll(".tab[data-target]");
+    const sections = document.querySelectorAll("section[id]");
+
+    function updateActiveTab() {
+      const scrollPosition =
+        window.scrollY +
+        document.querySelector(".titlebar").offsetHeight +
+        document.querySelector(".tabbar").offsetHeight +
+        80;
+
+      let current = "about";
+
+      sections.forEach((section) => {
+        if (scrollPosition >= section.offsetTop) {
+          current = section.id;
+        }
+      });
+
+      tabs.forEach((tab) => {
+        tab.classList.toggle(
+          "active",
+          tab.dataset.target === current
+        );
+      });
+    }
+
+    window.addEventListener(
+      "scroll",
+      updateActiveTab,
+      { passive: true }
+    );
+
+    window.addEventListener("resize", updateActiveTab);
+
+    updateActiveTab();
+  </script>
+
 </body>
 </html>
